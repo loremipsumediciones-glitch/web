@@ -1321,6 +1321,7 @@ function iniciarApp() {
     mostrarPagina(h);
   });
 
+  google.script.run
     .withSuccessHandler(renderizarTodo)
     .withFailureHandler(function() {
       document.getElementById('loader').innerHTML = '<span style="color:var(--terracota);font-family:var(--mono);font-size:12px;">El catálogo no se encuentra disponible momentáneamente. Por favor reintentá en unos instantes o contactanos por WhatsApp.</span>';
