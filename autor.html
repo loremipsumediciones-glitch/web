@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autor — Lorem Ipsum Ediciones</title>
+<meta name="robots" content="index, follow">
+
+<script>
+const URL_BACKEND_EXEC = "https://script.google.com/macros/s/AKfycbwaErOqrlFddu2Dnq3ZydRX6wLaMd2L2wwCDGpeD1rMV-GJOh_jKWgy7Tjux8-psdoP/exec";
+function crearPuente(ok, fail) {
+  return new Proxy({}, {
+    get: function(_, fn) {
+      if (fn === 'withSuccessHandler') return function(cb) { return crearPuente(cb, fail); };
+      if (fn === 'withFailureHandler') return function(cb) { return crearPuente(ok, cb); };
+      return function() {
+        var args = Array.prototype.slice.call(arguments);
+        fetch(URL_BACKEND_EXEC, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ fn: fn, args: args })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+          if (res.exito) { if (ok) ok(res.data); }
+          else { if (fail) fail(new Error(res.error)); }
+        })
+        .catch(function(e) { if (fail) fail(e); });
+      };
+    }
+  });
+}
+if (typeof google === 'undefined' || !google.script) {
+  window.google = { script: { run: crearPuente(null, null) } };
+}
+</script>
+
+<!-- Tipografías de alta gama editorial -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg-autor: #121316;
+  --bg-profundo: #0a0b0d;
+  --color-acento: #C85A38;
+  --color-acento-suave: rgba(200, 90, 56, 0.15);
+  --color-acento-hover: #b34a29;
+  
+  --tinta-arena: #F4EFE6;
+  --tinta-media: #9E9C97;
+  --tinta-tenue: #5E5D59;
+  --superficie-glass: rgba(255, 255, 255, 0.035);
+  --borde-vidrio: rgba(244, 239, 230, 0.09);
+  --borde-vidrio-fuerte: rgba(244, 239, 230, 0.22);
+  
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --mono: 'Space Mono', monospace;
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg-autor);
+  color: var(--tinta-arena);
+  font-family: var(--sans);
+  line-height: 1.65;
+  background-image: radial-gradient(rgba(244, 239, 230, 0.035) 1px, transparent 0);
+  background-size: 28px 28px;
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: var(--serif); font-weight: 400; line-height: 1.15; color: var(--tinta-arena); }
+a { color: inherit; text-decoration: none; }
+.contenedor { max-width: 1060px; margin: 0 auto; padding: 40px 24px; position: relative; z-index: 2; }
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--color-acento);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow::before { content: ''; width: 14px; height: 1px; background: var(--color-acento); }
+.titulo-seccion { font-size: clamp(2rem, 3.8vw, 3rem); margin-bottom: 1.2rem; }
+
+.glass {
+  background: var(--superficie-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--borde-vidrio);
+  border-radius: var(--radius);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.glass:hover { border-color: var(--borde-vidrio-fuerte); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 11px; font-family: var(--mono);
+  letter-spacing: 0.12em; text-transform: uppercase; padding: 12px 22px; border-radius: var(--radius-sm);
+  cursor: pointer; border: 1px solid var(--borde-vidrio-fuerte); background: transparent; color: var(--tinta-arena);
+  transition: all .25s ease;
+}
+.btn:hover { background: var(--tinta-arena); color: #121316; }
+.btn-acento { background: var(--color-acento); border-color: var(--color-acento); color: #fff; }
+.btn-acento:hover { background: var(--color-acento-hover); border-color: var(--color-acento-hover); color: #fff; }
+
+/* Barra Superior */
+.top-nav {
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--borde-vidrio);
+  background: rgba(18, 19, 22, 0.94);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.editorial-brand { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .15em; color: var(--tinta-media); }
+
+/* Hero Autor */
+.hero-autor-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 46px;
+  align-items: center;
+  margin: 20px 0 50px 0;
+}
+.autor-retrato-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1.15;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--borde-vidrio);
+  background: var(--bg-profundo);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
+.autor-retrato-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.autor-nombre { font-size: clamp(2.6rem, 5vw, 4.2rem); margin-bottom: 10px; line-height: 1.05; }
+.autor-bio-destacada { font-family: var(--serif); font-size: 1.35rem; line-height: 1.7; color: var(--tinta-arena); margin-bottom: 24px; }
+
+/* Radio / Podcast */
+.modulo-radio {
+  padding: 22px 26px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 50px;
+  border-left: 4px solid var(--color-acento);
+}
+
+/* =======================================================
+   SPOTLIGHT: PRÓXIMO LANZAMIENTO / EN PREVENTA
+   ======================================================= */
+.spotlight-proximo {
+  padding: 34px;
+  margin-bottom: 60px;
+  border: 1px solid var(--color-acento) !important;
+  background: linear-gradient(180deg, var(--color-acento-suave), var(--superficie-glass)) !important;
+  box-shadow: 0 10px 30px rgba(200, 90, 56, 0.15);
+}
+.spotlight-grid {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 30px;
+  align-items: center;
+}
+.spotlight-cover {
+  width: 100%;
+  aspect-ratio: 1 / 1.45;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.8);
+  border: 1px solid var(--borde-vidrio);
+  background: #000;
+}
+.spotlight-cover img { width: 100%; height: 100%; object-fit: cover; }
+
+/* =======================================================
+   BITÁCORA: LÍNEA DE TIEMPO HORIZONTAL DESLIZABLE
+   ======================================================= */
+.timeline-track-wrap {
+  position: relative;
+  overflow-x: auto;
+  padding: 36px 10px 24px 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-acento) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+.timeline-track-wrap::-webkit-scrollbar { height: 6px; }
+.timeline-track-wrap::-webkit-scrollbar-thumb { background: var(--color-acento); border-radius: 99px; }
+
+.timeline-linea-continua {
+  position: absolute;
+  top: 76px;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  border-top: 2px dashed var(--color-acento);
+  opacity: 0.45;
+  z-index: 1;
+}
+.timeline-nodos-flex {
+  display: flex;
+  gap: 40px;
+  position: relative;
+  z-index: 2;
+  width: max-content;
+}
+.timeline-nodo-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 140px;
+  cursor: pointer;
+  text-align: center;
+  transition: transform .25s ease;
+}
+.timeline-nodo-item:hover { transform: translateY(-5px); }
+.timeline-circulo-img {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  border: 2px solid var(--color-acento);
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 0 15px rgba(200, 90, 56, 0.35);
+  margin-bottom: 14px;
+  flex-shrink: 0;
+}
+.timeline-circulo-img img { width: 100%; height: 100%; object-fit: cover; }
+.timeline-nodo-titulo {
+  font-size: 1.15rem;
+  line-height: 1.25;
+  color: var(--tinta-arena);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* =======================================================
+   MUESTRA LITERARIA: POEMAS / FRAGMENTOS (SWIPE HORIZONTAL)
+   ======================================================= */
+.escritos-track-wrap {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  padding: 10px 4px 20px 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-acento) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+.escrito-card {
+  width: 310px;
+  flex-shrink: 0;
+  padding: 30px 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-left: 3px solid var(--color-acento);
+}
+.escrito-cuerpo-preview {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-style: italic;
+  line-height: 1.8;
+  color: var(--tinta-arena);
+  margin: 16px 0 20px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Libros con Swipe Horizontal */
+.libros-track-wrap {
+  display: flex;
+  gap: 22px;
+  overflow-x: auto;
+  padding: 10px 4px 24px 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-acento) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+.libros-track-wrap::-webkit-scrollbar { height: 6px; }
+.libros-track-wrap::-webkit-scrollbar-thumb { background: var(--color-acento); border-radius: 99px; }
+
+.card-libro {
+  width: 270px;
+  flex-shrink: 0;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-bottom: 3px solid var(--color-acento);
+}
+.precio-destacado-badge {
+  font-family: var(--mono);
+  font-size: 1.15rem;
+  color: var(--color-acento);
+  font-weight: 700;
+  margin: 8px 0 12px 0;
+}
+.libro-cover-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1.45;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid var(--borde-vidrio);
+  background: var(--bg-profundo);
+}
+.libro-cover-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.card-libro:hover .libro-cover-wrap img { transform: scale(1.04); }
+
+/* Galería de fotos */
+.galeria-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+.galeria-item {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--borde-vidrio);
+  cursor: pointer;
+  background: var(--bg-profundo);
+}
+.galeria-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .4s ease, filter .4s ease;
+  filter: grayscale(20%);
+}
+.galeria-item:hover img { transform: scale(1.08); filter: grayscale(0%); }
+
+/* Prensa & Medios */
+.prensa-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.prensa-card {
+  padding: 20px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  text-decoration: none;
+  border-left: 3px solid var(--color-acento);
+}
+.prensa-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-acento);
+}
+.prensa-medio-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--color-acento);
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* Video */
+.video-wrap {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid var(--borde-vidrio);
+  margin-top: 20px;
+  background: #000;
+}
+.video-wrap iframe { position: absolute; top:0; left: 0; width: 100%; height: 100%; border: none; }
+
+/* Skeleton */
+.skeleton-box {
+  background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 75%);
+  background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: var(--radius-sm);
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.sk-hero { height: 320px; border-radius: var(--radius); margin-bottom: 30px; }
+.sk-line { height: 20px; margin-bottom: 12px; }
+
+/* Modales */
+.modal-fondo {
+  display: none; position: fixed; inset: 0; background: rgba(10, 11, 13, 0.94);
+  backdrop-filter: blur(14px); z-index: 1000; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-fondo.activo { display: flex; }
+.modal-caja {
+  max-width: 660px; width: 100%; padding: 34px; background: #17181c;
+  border: 1px solid var(--borde-vidrio-fuerte); border-radius: var(--radius); position: relative; max-height: 90vh; overflow-y: auto;
+}
+.modal-cerrar {
+  position: absolute; top: 16px; right: 16px; background: transparent; border: none; color: var(--tinta-media);
+  cursor: pointer; font-size: 22px;
+}
+
+@media (max-width: 768px) {
+  .hero-autor-grid { grid-template-columns: 1fr; text-align: center; gap: 26px; }
+  .autor-retrato-wrap { max-width: 240px; margin: 0 auto; }
+  .eyebrow { justify-content: center; }
+  .spotlight-grid { grid-template-columns: 1fr; text-align: center; }
+  .spotlight-cover { max-width: 180px; margin: 0 auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- BARRA INSTITUCIONAL SUPERIOR -->
+<div class="top-nav">
+  <span class="editorial-brand" id="editorial-brand-txt">Lorem Ipsum Ediciones</span>
+</div>
+
+<!-- SKELETON LOADER -->
+<div id="loader-autor" class="contenedor">
+  <div class="skeleton-box sk-hero"></div>
+  <div class="skeleton-box sk-line" style="width:50%;"></div>
+  <div class="skeleton-box sk-line" style="width:80%;"></div>
+</div>
+
+<main id="app-autor" style="display:none;">
+
+  <!-- HERO AUTOR -->
+  <section class="contenedor">
+    <div class="hero-autor-grid">
+      <div class="autor-retrato-wrap">
+        <img id="autor-foto" src="" alt="Retrato del Autor">
+      </div>
+      <div>
+        <div class="eyebrow">Autor de la Editorial</div>
+        <h1 class="autor-nombre" id="autor-nombre"></h1>
+        <p class="autor-bio-destacada" id="autor-bio-destacada"></p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;" id="autor-botones-contacto">
+          <a id="btn-autor-contacto" href="#" target="_blank" class="btn btn-acento">Contactar al Autor</a>
+          <a href="#libros-autor" class="btn">Ver Libros Publicados ↓</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- MÓDULO: RADIO / PODCAST / SPOTIFY (CONDICIONAL) -->
+    <div id="sec-radio" class="glass modulo-radio" style="display:none;">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div style="font-size:28px;">🎙️</div>
+        <div>
+          <span class="eyebrow" style="margin-bottom:4px;">Transmisión & Medios</span>
+          <h3 style="font-size:1.4rem;" id="radio-titulo-txt">Espacio Radial</h3>
+        </div>
+      </div>
+      <a id="btn-radio-link" href="#" target="_blank" class="btn btn-acento">Escuchar Transmisión →</a>
+    </div>
+
+    <!-- SECCIÓN: PRÓXIMO LANZAMIENTO / EN PREVENTA (CONDICIONAL) -->
+    <div id="sec-spotlight-proximo" class="glass spotlight-proximo" style="display:none;">
+      <div class="spotlight-grid">
+        <div class="spotlight-cover">
+          <img id="spotlight-img" src="" alt="Próximo libro">
+        </div>
+        <div>
+          <div class="eyebrow">Próximo Lanzamiento</div>
+          <h3 id="spotlight-titulo" style="font-size:2.2rem;margin-bottom:8px;"></h3>
+          <p id="spotlight-sinopsis" style="color:var(--tinta-media);font-size:0.95rem;line-height:1.7;margin-bottom:20px;"></p>
+          <a id="spotlight-btn-preventa" href="#" target="_blank" class="btn btn-acento">Reservar ejemplar de preventa →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         BITÁCORA: LÍNEA DE TIEMPO HORIZONTAL (SWIPE / DESLIZABLE)
+         ======================================================= -->
+    <div id="sec-circuito" style="margin-top:70px;display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;flex-wrap:wrap;gap:10px;">
+        <div>
+          <div class="eyebrow">Bitácora Visual & Escenarios</div>
+          <h2 class="titulo-seccion" style="margin-bottom:0;">Lugares y Documentos</h2>
+        </div>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--tinta-tenue);">← Deslizá horizontalmente →</span>
+      </div>
+
+      <div class="timeline-track-wrap">
+        <div class="timeline-linea-continua"></div>
+        <div id="circuito-canvas" class="timeline-nodos-flex"></div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         MUESTRA LITERARIA: POEMAS Y FRAGMENTOS (SWIPE HORIZONTAL)
+         ======================================================= -->
+    <div id="sec-escritos" style="margin-top:70px;display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+        <div>
+          <div class="eyebrow">Muestra de Obra</div>
+          <h2 class="titulo-seccion" style="margin-bottom:0;">Poemas & Escritos</h2>
+        </div>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--tinta-tenue);">← Deslizá horizontalmente →</span>
+      </div>
+
+      <div id="escritos-canvas" class="escritos-track-wrap"></div>
+    </div>
+
+    <!-- CATÁLOGO DE LIBROS DEL AUTOR (SWIPE) -->
+    <div id="libros-autor" style="margin-top:70px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+        <div>
+          <div class="eyebrow">Obras Publicadas</div>
+          <h2 class="titulo-seccion" style="margin-bottom:0;">Títulos del Autor</h2>
+        </div>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--tinta-tenue);">← Deslizá para ver más títulos →</span>
+      </div>
+      <div id="grid-libros-autor" class="libros-track-wrap"></div>
+    </div>
+
+    <!-- GALERÍA FOTOGRÁFICA PERSONAL (CONDICIONAL) -->
+    <div id="sec-galeria-fotos" style="margin-top:70px;display:none;">
+      <div class="eyebrow">Archivo Fotográfico</div>
+      <h2 class="titulo-seccion">Registros & Momentos</h2>
+      <div id="galeria-fotos-grid" class="galeria-grid"></div>
+    </div>
+
+    <!-- VIDEO ENTREVISTA (CONDICIONAL) -->
+    <div id="sec-video" style="margin-top:70px;display:none;">
+      <div class="eyebrow">Encuentros & Diálogos</div>
+      <h2 class="titulo-seccion">Entrevista con el Autor</h2>
+      <div class="video-wrap">
+        <iframe id="iframe-video" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: PRENSA Y RESEÑAS (CONDICIONAL) -->
+    <div id="sec-prensa" style="margin-top:70px;display:none;">
+      <div class="eyebrow">Prensa & Medios</div>
+      <h2 class="titulo-seccion">Notas, Entrevistas y Críticas</h2>
+      <div id="prensa-canvas" class="prensa-grid"></div>
+    </div>
+
+    <!-- BIOGRAFÍA EXTENDIDA -->
+    <div id="sec-bio-extendida" style="margin-top:70px;">
+      <div class="glass" style="padding:40px 34px;">
+        <div class="eyebrow">Trayectoria</div>
+        <h2 style="font-size:2rem;margin-bottom:16px;">Acerca de <span id="nombre-bio-pie"></span></h2>
+        <p id="autor-bio-completa" style="color:var(--tinta-media);font-size:1.05rem;line-height:1.85;white-space:pre-line;"></p>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<footer style="border-top:1px solid var(--borde-vidrio);padding:40px 24px;text-align:center;margin-top:70px;">
+  <p style="font-family:var(--mono);font-size:11px;color:var(--tinta-tenue);letter-spacing:.12em;">
+    PÁGINA OFICIAL DE AUTOR — PUBLICADO POR LOREM IPSUM EDICIONES
+  </p>
+</footer>
+
+<!-- MODAL GENÉRICO -->
+<div class="modal-fondo" id="modal-autor" onclick="cerrarModalFondo(event)">
+  <div class="modal-caja">
+    <button class="modal-cerrar" onclick="cerrarModal()">✕</button>
+    <div id="modal-cuerpo-autor"></div>
+  </div>
+</div>
+
+<script>
+// BANNER DE SEGURIDAD EDITORIAL EN CONSOLA (F12)
+console.log(
+  "%c LOREM IPSUM EDICIONES %c Plataforma Digital Protegida\n%cPerfil Oficial de Autor · Todos los derechos reservados. Acceso no autorizado monitoreado.",
+  "background:#C85A38;color:#ffffff;padding:6px 10px;font-family:monospace;font-size:12px;font-weight:bold;border-radius:4px 0 0 4px;",
+  "background:#121316;color:#F4EFE6;padding:6px 10px;font-family:monospace;font-size:12px;border:1px solid #C85A38;border-radius:0 4px 4px 0;",
+  "color:#9E9C97;font-family:monospace;font-size:10px;padding:6px 0;display:block;"
+);
+
+var AUTOR_SLUG = new URLSearchParams(window.location.search).get('autor') || '';
+var DATOS_AUTOR = null;
+var ESCRITOS_AUTOR = [];
+
+function iniciarLandingAutor() {
+  google.script.run
+    .withSuccessHandler(renderizarPaginaAutor)
+    .withFailureHandler(function() {
+      document.getElementById('loader-autor').innerHTML = '<p style="color:var(--color-acento);font-family:var(--mono);font-size:13px;padding:20px 0;">El perfil de autor no se encuentra disponible momentáneamente. Por favor reintentá en unos instantes.</p>';
+    })
+    .obtenerDatosLandingAutor(AUTOR_SLUG);
+}
+
+function renderizarPaginaAutor(res) {
+  if (!res || !res.exito) {
+    document.getElementById('loader-autor').innerHTML = '<p style="color:var(--color-acento);font-family:var(--mono);">Autor no encontrado.</p>';
+    return;
+  }
+
+  DATOS_AUTOR = res;
+  var a = res.autor;
+  var cfg = res.configEditorial || {};
+
+  // 1. Colores Dinámicos
+  if (a.color_primario) document.documentElement.style.setProperty('--bg-autor', a.color_primario);
+  if (a.color_acento) {
+    document.documentElement.style.setProperty('--color-acento', a.color_acento);
+    document.documentElement.style.setProperty('--color-acento-hover', a.color_acento);
+  }
+
+  // 2. Textos principales
+  document.getElementById('autor-nombre').textContent = a.nombre;
+  document.getElementById('nombre-bio-pie').textContent = a.nombre;
+  document.getElementById('autor-foto').src = a.foto_url || 'https://via.placeholder.com/300';
+  document.getElementById('autor-bio-destacada').textContent = a.bio_corta || a.bio_completa;
+  document.getElementById('autor-bio-completa').textContent = a.bio_completa;
+  if (cfg.site_nombre) document.getElementById('editorial-brand-txt').textContent = cfg.site_nombre;
+
+  // Botón WhatsApp directo
+  var btnContacto = document.getElementById('btn-autor-contacto');
+  if (a.whatsapp_ventas) {
+    var msg = encodeURIComponent('¡Hola ' + a.nombre + '! Te escribo desde tu página web oficial.');
+    btnContacto.href = 'https://wa.me/' + a.whatsapp_ventas.replace(/\D/g, '') + '?text=' + msg;
+  } else {
+    btnContacto.style.display = 'none';
+  }
+
+  // 3. Radio / Podcast
+  if (a.link_radio) {
+    document.getElementById('sec-radio').style.display = 'flex';
+    document.getElementById('radio-titulo-txt').textContent = a.texto_radio || 'Programa de Radio / Podcast';
+    document.getElementById('btn-radio-link').href = a.link_radio;
+  }
+
+  // 4. Próximo Lanzamiento (detecta si algún libro está marcado como preventa o próximo)
+  renderizarSpotlightProximo(res.libros || [], a);
+
+  // 5. Bitácora: Línea de Tiempo Horizontal (Nodos circulares sobre línea)
+  if (a.lugaresObras && a.lugaresObras.length > 0) {
+    renderizarTimelineBitacora(a.lugaresObras);
+    document.getElementById('sec-circuito').style.display = 'block';
+  }
+
+  // 6. Muestra Literaria / Poemas (Swipe)
+  renderizarEscritosPoemas(a);
+
+  // 7. Catálogo de Libros del autor
+  renderizarLibrosAutor(res.libros || [], a);
+
+  // 8. Galería de Fotos Separada
+  if (a.fotos_galeria && a.fotos_galeria.length > 0) {
+    renderizarGaleriaFotos(a.fotos_galeria);
+    document.getElementById('sec-galeria-fotos').style.display = 'block';
+  }
+
+  // 9. Video de Entrevista
+  if (a.video_entrevista_url) {
+    var embedUrl = extraerYoutubeEmbed(a.video_entrevista_url);
+    if (embedUrl) {
+      document.getElementById('iframe-video').src = embedUrl;
+      document.getElementById('sec-video').style.display = 'block';
+    }
+  }
+
+  // 10. Bloque de Prensa y Medios (si tiene)
+  if (a.prensa && a.prensa.length > 0) {
+    renderizarPrensa(a.prensa);
+    document.getElementById('sec-prensa').style.display = 'block';
+  }
+
+  // Ocultar Skeleton Loader y mostrar página
+  document.getElementById('loader-autor').style.display = 'none';
+  document.getElementById('app-autor').style.display = 'block';
+}
+
+// ----------------------------------------------------
+// BLOQUE: PRÓXIMO LANZAMIENTO
+// ----------------------------------------------------
+function renderizarSpotlightProximo(libros, autor) {
+  var proximo = libros.find(function(l) {
+    return l.estado_badge && (
+      l.estado_badge.toLowerCase().indexOf('próxim') !== -1 ||
+      l.estado_badge.toLowerCase().indexOf('proxim') !== -1 ||
+      l.estado_badge.toLowerCase().indexOf('preventa') !== -1
+    );
+  });
+
+  if (!proximo) return;
+
+  document.getElementById('spotlight-img').src = proximo.portada_url || '';
+  document.getElementById('spotlight-titulo').textContent = proximo.titulo;
+  document.getElementById('spotlight-sinopsis').textContent = proximo.sinopsis_corta || proximo.sinopsis_larga || '';
+  
+  var waNum = autor.whatsapp_ventas ? autor.whatsapp_ventas.replace(/\D/g, '') : '';
+  var waMsg = encodeURIComponent('¡Hola ' + autor.nombre + '! Quisiera reservar un ejemplar en preventa de "' + proximo.titulo + '".');
+  document.getElementById('spotlight-btn-preventa').href = 'https://wa.me/' + waNum + '?text=' + waMsg;
+  document.getElementById('sec-spotlight-proximo').style.display = 'block';
+}
+
+// ----------------------------------------------------
+// BLOQUE: BITÁCORA HORIZONTAL (NODOS CIRCULARES)
+// ----------------------------------------------------
+function renderizarTimelineBitacora(items) {
+  var cont = document.getElementById('circuito-canvas');
+  cont.innerHTML = items.map(function(it, idx) {
+    return '<div class="timeline-nodo-item" onclick="abrirModalBitacora(' + idx + ')">' +
+      '<div class="timeline-circulo-img">' +
+        '<img src="' + escapeHtml(it.imagen_url) + '" alt="' + escapeHtml(it.titulo) + '">' +
+      '</div>' +
+      '<h4 class="timeline-nodo-titulo">' + escapeHtml(it.titulo) + '</h4>' +
+    '</div>';
+  }).join('');
+}
+
+function abrirModalBitacora(idx) {
+  var it = DATOS_AUTOR.autor.lugaresObras[idx];
+  document.getElementById('modal-cuerpo-autor').innerHTML =
+    '<div style="text-align:center;background:#000;border-radius:6px;margin-bottom:18px;padding:8px;">' +
+      '<img src="' + escapeHtml(it.imagen_url) + '" style="max-width:100%;max-height:65vh;object-fit:contain;display:block;margin:0 auto;">' +
+    '</div>' +
+    '<h3 style="font-size:1.85rem;margin-bottom:8px;">' + escapeHtml(it.titulo) + '</h3>' +
+    '<p style="color:var(--tinta-media);font-size:1.05rem;line-height:1.75;white-space:pre-line;">' + escapeHtml(it.descripcion) + '</p>';
+
+  document.getElementById('modal-autor').classList.add('activo');
+}
+
+// ----------------------------------------------------
+// BLOQUE: MUESTRA LITERARIA / POEMAS (SWIPE)
+// ----------------------------------------------------
+function renderizarEscritosPoemas(autor) {
+  ESCRITOS_AUTOR = autor.escritos || [];
+
+  // Si por compatibilidad viniera como texto plano o JSON sin procesar:
+  if (!ESCRITOS_AUTOR.length && (autor.escritos_poemas_json || autor.escritos_json)) {
+    var raw = autor.escritos_poemas_json || autor.escritos_json;
+    try {
+      ESCRITOS_AUTOR = JSON.parse(raw);
+    } catch (e) {
+      ESCRITOS_AUTOR = String(raw).split('---').map(function(b) {
+        var lines = b.trim().split('\n');
+        return {
+          titulo: (lines[0] || 'Sin título').trim(),
+          texto: lines.slice(1).join('\n').trim()
+        };
+      }).filter(function(x) { return x.texto; });
+    }
+  }
+
+  if (!ESCRITOS_AUTOR || ESCRITOS_AUTOR.length === 0) return;
+
+  var cont = document.getElementById('escritos-canvas');
+  cont.innerHTML = ESCRITOS_AUTOR.map(function(it, idx) {
+    return '<div class="glass escrito-card">' +
+      '<div>' +
+        '<span class="eyebrow" style="margin-bottom:6px;">Fragmento</span>' +
+        '<h3 style="font-size:1.6rem;margin-bottom:8px;">' + escapeHtml(it.titulo) + '</h3>' +
+        '<div class="escrito-cuerpo-preview">"' + escapeHtml(it.texto) + '"</div>' +
+      '</div>' +
+      '<button class="btn btn-acento" onclick="abrirModalEscrito(' + idx + ')" style="width:100%;">Leer completo →</button>' +
+    '</div>';
+  }).join('');
+
+  document.getElementById('sec-escritos').style.display = 'block';
+}
+
+function abrirModalEscrito(idx) {
+  var it = ESCRITOS_AUTOR[idx];
+  document.getElementById('modal-cuerpo-autor').innerHTML =
+    '<span class="eyebrow">Lectura de Obra</span>' +
+    '<h3 style="font-size:2.2rem;margin-bottom:18px;">' + escapeHtml(it.titulo) + '</h3>' +
+    '<div style="font-family:var(--serif);font-size:1.35rem;font-style:italic;line-height:1.9;color:var(--tinta-arena);white-space:pre-line;padding:14px 0;border-top:1px solid var(--borde-vidrio);">' +
+      escapeHtml(it.texto) +
+    '</div>' +
+    '<div style="text-align:right;margin-top:20px;font-family:var(--mono);font-size:11px;color:var(--color-acento);">' +
+      '— ' + escapeHtml(DATOS_AUTOR.autor.nombre) +
+    '</div>';
+
+  document.getElementById('modal-autor').classList.add('activo');
+}
+
+// ----------------------------------------------------
+// BLOQUE: LIBROS DEL AUTOR (SWIPE & VENTA DIRECTA)
+// ----------------------------------------------------
+function renderizarLibrosAutor(libros, autor) {
+  var cont = document.getElementById('grid-libros-autor');
+  if (!libros.length) {
+    cont.innerHTML = '<p style="color:var(--tinta-media);font-family:var(--mono);font-size:12px;">Próximamente se publicarán títulos de este autor.</p>';
+    return;
+  }
+
+  cont.innerHTML = libros.map(function(lib, idx) {
+    var badge = lib.estado_badge ? '<span class="eyebrow" style="margin-bottom:6px;">' + escapeHtml(lib.estado_badge) + '</span>' : '';
+    var precio = lib.precio_ebook || lib.precio || '';
+    var precioHtml = precio ? '<div class="precio-destacado-badge">' + escapeHtml(precio) + '</div>' : '';
+
+    return '<div class="glass card-libro">' +
+      '<div>' +
+        '<div class="libro-cover-wrap">' +
+          '<img src="' + (lib.portada_url || 'https://via.placeholder.com/300x450') + '" alt="' + escapeHtml(lib.titulo) + '">' +
+        '</div>' +
+        badge +
+        '<h3 style="font-size:1.6rem;margin-bottom:4px;line-height:1.2;">' + escapeHtml(lib.titulo) + '</h3>' +
+        precioHtml +
+        '<p style="color:var(--tinta-media);font-size:0.9rem;line-height:1.5;margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">' + 
+          escapeHtml(lib.sinopsis_corta || lib.sinopsis_larga || '') + 
+        '</p>' +
+      '</div>' +
+      '<button class="btn btn-acento" onclick="abrirModalLibroAutor(' + idx + ')" style="width:100%;justify-content:center;">Ver Sinopsis & Comprar →</button>' +
+    '</div>';
+  }).join('');
+}
+
+function abrirModalLibroAutor(idx) {
+  var lib = DATOS_AUTOR.libros[idx];
+  var autor = DATOS_AUTOR.autor;
+  var precio = lib.precio_ebook || lib.precio || '';
+  var waNum = autor.whatsapp_ventas ? autor.whatsapp_ventas.replace(/\D/g, '') : '';
+  
+  var mensajeTexto = '¡Hola ' + autor.nombre + '! Te contacto desde tu web oficial. Quisiera comprar tu libro "' + lib.titulo + '"' + (precio ? (' (' + precio + ')') : '') + '.';
+  var waLink = 'https://wa.me/' + waNum + '?text=' + encodeURIComponent(mensajeTexto);
+
+  document.getElementById('modal-cuerpo-autor').innerHTML =
+    '<div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:20px;">' +
+      '<div style="width:130px;aspect-ratio:1/1.5;overflow:hidden;border-radius:4px;flex-shrink:0;box-shadow:0 10px 25px rgba(0,0,0,0.8);">' +
+        '<img src="' + (lib.portada_url || '') + '" style="width:100%;height:100%;object-fit:cover;">' +
+      '</div>' +
+      '<div style="flex:1;min-width:180px;">' +
+        (lib.estado_badge ? '<span class="eyebrow" style="margin-bottom:6px;">' + escapeHtml(lib.estado_badge) + '</span>' : '') +
+        '<h3 style="font-size:2rem;margin-bottom:6px;line-height:1.15;">' + escapeHtml(lib.titulo) + '</h3>' +
+        '<p style="font-family:var(--mono);font-size:12px;color:var(--color-acento);margin-bottom:8px;">Autor: ' + escapeHtml(autor.nombre) + '</p>' +
+        (precio ? '<div style="font-family:var(--mono);font-size:1.35rem;color:var(--color-acento);font-weight:700;margin-bottom:12px;">' + escapeHtml(precio) + '</div>' : '') +
+      '</div>' +
+    '</div>' +
+    '<div style="color:var(--tinta-media);font-size:0.95rem;line-height:1.75;margin-bottom:24px;white-space:pre-line;border-top:1px solid var(--borde-vidrio);padding-top:14px;">' + 
+      escapeHtml(lib.sinopsis_larga || lib.sinopsis_corta || 'Sinopsis en preparación.') + 
+    '</div>' +
+    '<a href="' + waLink + '" target="_blank" class="btn btn-acento" style="width:100%;justify-content:center;font-size:12px;padding:14px;">' +
+      'Comprar ejemplar directo al Autor por WhatsApp' +
+    '</a>';
+
+  document.getElementById('modal-autor').classList.add('activo');
+}
+
+// ----------------------------------------------------
+// BLOQUE: GALERÍA DE FOTOS
+// ----------------------------------------------------
+function renderizarGaleriaFotos(fotos) {
+  var cont = document.getElementById('galeria-fotos-grid');
+  cont.innerHTML = fotos.map(function(url) {
+    return '<div class="galeria-item" onclick="abrirFotoSola(\'' + escapeHtml(url) + '\')">' +
+      '<img src="' + escapeHtml(url) + '" alt="Registro fotográfico">' +
+    '</div>';
+  }).join('');
+}
+
+function abrirFotoSola(url) {
+  document.getElementById('modal-cuerpo-autor').innerHTML =
+    '<div style="text-align:center;">' +
+      '<img src="' + escapeHtml(url) + '" style="max-width:100%;max-height:80vh;object-fit:contain;border-radius:6px;">' +
+    '</div>';
+  document.getElementById('modal-autor').classList.add('activo');
+}
+
+function extraerYoutubeEmbed(url) {
+  if (!url) return null;
+  var match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+  return match ? ('https://www.youtube.com/embed/' + match[1]) : null;
+}
+
+function renderizarPrensa(items) {
+  var cont = document.getElementById('prensa-canvas');
+  cont.innerHTML = items.map(function(p) {
+    return '<a href="' + escapeHtml(p.url) + '" target="_blank" class="glass prensa-card">' +
+      '<div>' +
+        '<span class="prensa-medio-badge">🎙️ ' + escapeHtml(p.medio) + '</span>' +
+        '<h4 style="font-size:1.15rem;margin:0;line-height:1.35;">' + escapeHtml(p.titulo) + '</h4>' +
+      '</div>' +
+      '<span style="font-family:var(--mono);font-size:16px;color:var(--color-acento);flex-shrink:0;">↗</span>' +
+    '</a>';
+  }).join('');
+}
+
+function cerrarModal() { document.getElementById('modal-autor').classList.remove('activo'); }
+function cerrarModalFondo(e) { if (e.target.id === 'modal-autor') cerrarModal(); }
+function escapeHtml(t) { return t ? String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') : ''; }
+
+document.addEventListener('DOMContentLoaded', iniciarLandingAutor);
+</script>
+</body>
+</html>

@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <script>
+const URL_BACKEND_EXEC = "https://script.google.com/macros/s/AKfycbwaErOqrlFddu2Dnq3ZydRX6wLaMd2L2wwCDGpeD1rMV-GJOh_jKWgy7Tjux8-psdoP/exec";
+function crearPuente(ok, fail) {
+  return new Proxy({}, {
+    get: function(_, fn) {
+      if (fn === 'withSuccessHandler') return function(cb) { return crearPuente(cb, fail); };
+      if (fn === 'withFailureHandler') return function(cb) { return crearPuente(ok, cb); };
+      return function() {
+        var args = Array.prototype.slice.call(arguments);
+        fetch(URL_BACKEND_EXEC, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ fn: fn, args: args })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+          if (res.exito) { if (ok) ok(res.data); }
+          else { if (fail) fail(new Error(res.error)); }
+        })
+        .catch(function(e) { if (fail) fail(e); });
+      };
+    }
+  });
+}
+if (typeof google === 'undefined' || !google.script) {
+  window.google = { script: { run: crearPuente(null, null) } };
+}
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel de Administración — Lorem Ipsum Editorial</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #121316; --bg-profundo: #0a0b0d;
+    --glass: rgba(255,255,255,0.045); --borde: rgba(244,239,230,0.12); --borde-fuerte: rgba(244,239,230,0.28);
+    --arena: #F4EFE6; --media: #9E9C97;
+    --terracota: #C85A38; --terracota-suave: rgba(200,90,56,0.15); --terracota-hover: #b34a29;
+    --verde: #5b9c6c; --sans: 'Plus Jakarta Sans', system-ui, sans-serif; --mono: 'Space Mono', monospace;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body { background: var(--bg); color: var(--arena); font-family: var(--sans); min-height:100vh; }
+  .oculto { display:none !important; }
+  .contenedor { max-width: 900px; margin:0 auto; padding: 20px 16px 80px 16px; }
+
+  /* Login */
+  #vista-login { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
+  .login-caja { max-width:380px; width:100%; background: var(--glass); border:1px solid var(--borde); border-radius: var(--radius); padding:36px 28px; text-align:center; }
+  .login-caja h1 { font-size:1.5rem; margin-bottom:6px; }
+  .login-caja p { color: var(--media); font-size:13px; margin-bottom:22px; }
+
+  input, select, textarea {
+    width:100%; padding:11px 13px; background: rgba(0,0,0,0.35); border:1px solid var(--borde-fuerte);
+    border-radius:8px; color: var(--arena); font-family: var(--sans); font-size:14px; margin-top:5px;
+  }
+  input:focus, select:focus, textarea:focus { outline:none; border-color: var(--terracota); }
+  textarea { resize: vertical; min-height:70px; }
+  label.campo { display:block; margin-bottom:14px; font-family: var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color: var(--media); }
+
+  .btn {
+    display:inline-flex; align-items:center; justify-content:center; gap:6px; font-size:12px; font-family: var(--mono);
+    letter-spacing:.06em; text-transform:uppercase; padding:11px 18px; border-radius:8px; cursor:pointer;
+    border:1px solid var(--borde-fuerte); background:transparent; color: var(--arena); transition: all .2s; width:100%;
+  }
+  .btn:hover { background: var(--arena); color: var(--bg); }
+  .btn-terracota { background: var(--terracota); border-color: var(--terracota); color:#fff; }
+  .btn-terracota:hover { background: var(--terracota-hover); border-color: var(--terracota-hover); color:#fff; }
+  .btn-chico { width:auto; padding:7px 12px; font-size:10.5px; }
+  .error-msg { color: var(--terracota); font-family: var(--mono); font-size:12px; margin-top:12px; }
+
+  /* Header + tabs */
+  .top-bar { display:flex; justify-content:space-between; align-items:center; padding:16px; border-bottom:1px solid var(--borde); position:sticky; top:0; background: rgba(18,19,22,0.96); backdrop-filter: blur(10px); z-index:20; }
+  .top-bar h2 { font-size:1.1rem; }
+  .tabs { display:flex; gap:6px; overflow-x:auto; padding: 14px 16px 0 16px; }
+  .tab-btn { flex-shrink:0; font-family: var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.08em; padding:9px 14px; border-radius:99px; background: var(--glass); border:1px solid var(--borde); color: var(--media); cursor:pointer; }
+  .tab-btn.activo { background: var(--terracota); border-color: var(--terracota); color:#fff; }
+
+  .barra-accion { display:flex; justify-content:space-between; align-items:center; margin: 18px 0 14px 0; gap:10px; }
+  .barra-accion h3 { font-size:1.2rem; }
+  .btn-agregar { width:auto; padding:9px 16px; }
+
+  /* Tarjetas de lista */
+  .item-card { background: var(--glass); border:1px solid var(--borde); border-radius: var(--radius); padding:14px 16px; margin-bottom:10px; display:flex; gap:12px; align-items:center; }
+  .item-card img.miniatura { width:48px; height:48px; border-radius:6px; object-fit:cover; flex-shrink:0; background: var(--bg-profundo); border:1px solid var(--borde); }
+  .item-info { flex:1; min-width:0; }
+  .item-info .titulo { font-weight:600; font-size:14.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .item-info .sub { font-family: var(--mono); font-size:11px; color: var(--media); margin-top:2px; }
+  .item-acciones { display:flex; gap:6px; align-items:center; flex-shrink:0; }
+
+  /* Switch */
+  .switch { position:relative; display:inline-block; width:42px; height:24px; flex-shrink:0; }
+  .switch input { opacity:0; width:0; height:0; }
+  .switch-track { position:absolute; cursor:pointer; inset:0; background: rgba(255,255,255,0.15); border-radius:99px; transition:.2s; }
+  .switch-track::before { content:''; position:absolute; height:18px; width:18px; left:3px; bottom:3px; background:white; border-radius:50%; transition:.2s; }
+  .switch input:checked + .switch-track { background: var(--terracota); }
+  .switch input:checked + .switch-track::before { transform: translateX(18px); }
+  .campo-switch { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .campo-switch span { font-family: var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color: var(--arena); }
+
+  /* Botones icono */
+  .icon-btn { background: transparent; border:1px solid var(--borde); color: var(--media); width:32px; height:32px; border-radius:7px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; }
+  .icon-btn:hover { border-color: var(--terracota); color: var(--terracota); }
+
+  /* Formulario modal-like */
+  #panel-form { background: var(--glass); border:1px solid var(--borde-fuerte); border-radius: var(--radius); padding:20px 18px; margin-bottom:22px; }
+  #panel-form h3 { font-size:1.15rem; margin-bottom:16px; }
+  .form-botones { display:flex; gap:10px; margin-top:6px; }
+
+  /* Imagen upload */
+  .img-upload-wrap { display:flex; gap:12px; align-items:center; margin-top:6px; }
+  .img-upload-preview { width:64px; height:64px; border-radius:8px; object-fit:cover; background: var(--bg-profundo); border:1px solid var(--borde); display:none; }
+  .img-upload-estado { font-family: var(--mono); font-size:11px; color: var(--media); }
+
+  .vacio-msg { color: var(--media); font-size:13px; text-align:center; padding:30px 10px; }
+  .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#1c1d21; border:1px solid var(--borde-fuerte); padding:12px 20px; border-radius:8px; font-size:13px; z-index:200; }
+
+  .linea { display:flex; justify-content:space-between; align-items:baseline; padding:8px 0; border-bottom:1px solid var(--borde); font-size:13px; }
+  .linea.destacado { padding:10px 0; border-top:1px solid var(--borde-fuerte); border-bottom:1px solid var(--borde-fuerte); }
+  .linea.total { padding-top:12px; margin-top:4px; border-top:1px solid var(--terracota); border-bottom:none; }
+  .linea.total .num { font-size:1.45rem; color:var(--terracota); font-weight:700; font-family:var(--serif); }
+  .linea .num { font-family:var(--mono); }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="vista-login">
+  <div class="login-caja">
+    <h1>Panel de Administración</h1>
+    <p>Lorem Ipsum Editorial</p>
+    <form onsubmit="intentarLogin(event)">
+      <label class="campo">Contraseña
+        <input type="password" id="input-pass-admin" required autofocus>
+      </label>
+      <button type="submit" class="btn btn-terracota">Ingresar</button>
+      <p class="error-msg oculto" id="login-error">Contraseña incorrecta.</p>
+    </form>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="vista-dashboard" class="oculto">
+  <div class="top-bar">
+    <h2>Panel de Administración</h2>
+    <button class="icon-btn" onclick="cerrarSesion()" title="Cerrar sesión">⏻</button>
+  </div>
+
+  <div class="tabs" id="tabs-contenedor"></div>
+
+  <div class="contenedor">
+    <div class="barra-accion">
+      <h3 id="titulo-tabla-activa"></h3>
+      <button class="btn btn-terracota btn-agregar" id="btn-agregar-item" onclick="abrirFormulario(null)">+ Agregar</button>
+    </div>
+
+    <div id="panel-cotizador" class="oculto"></div>
+    <div id="panel-form" class="oculto"></div>
+    <div id="lista-items"></div>
+  </div>
+</div>
+
+<div class="toast oculto" id="toast"></div>
+
+<script>
+function leerSesionSegura(k) { try { return sessionStorage.getItem(k); } catch(e) { return null; } }
+function guardarSesionSegura(k, v) { try { sessionStorage.setItem(k, v); } catch(e) {} }
+function borrarSesionSegura(k) { try { sessionStorage.removeItem(k); } catch(e) {} }
+
+var TOKEN = leerSesionSegura('admin_token') || null;
+var TABLA_ACTIVA = 'libros';
+var CACHE_ITEMS = [];
+var EDITANDO_FILA = null;
+
+var ESQUEMAS = {
+  libros: {
+    etiqueta: 'Libros',
+    tituloCampo: 'titulo',
+    campos: [
+      { key: 'titulo', label: 'Título', tipo: 'texto', requerido: true },
+      { key: 'autor', label: 'Autor/a', tipo: 'texto', requerido: true },
+      { key: 'estado_badge', label: 'Etiqueta (ej: Próximamente Octubre)', tipo: 'texto' },
+      { key: 'sinopsis_corta', label: 'Sinopsis corta', tipo: 'textarea' },
+      { key: 'sinopsis_larga', label: 'Sinopsis completa', tipo: 'textarea' },
+      { key: 'portada_url', label: 'Portada del libro', tipo: 'imagen' },
+      { key: 'link_landing_o_preventa', label: 'Link de preventa (opcional)', tipo: 'texto' },
+      { key: 'es_destacado', label: 'Libro del mes (aparece en portada de inicio)', tipo: 'switch' },
+      { key: 'es_ebook', label: 'Se vende como ebook (habilita el formulario de compra)', tipo: 'switch' },
+      { key: 'precio_ebook', label: 'Precio del ebook (ej: $5.000)', tipo: 'texto' },
+      { key: 'archivo_ebook_url', label: 'Link privado del archivo (PDF/ePub) en Drive — NO lo compartas públicamente, el sistema lo lee solo', tipo: 'texto' },
+      { key: 'pago_cbu_autor', label: 'CBU / Alias del Autor (opcional: si se deja vacío se usa el general de la editorial)', tipo: 'texto' },
+      { key: 'pago_titular_autor', label: 'Titular de la cuenta del Autor (opcional)', tipo: 'texto' },
+      { key: 'activo', label: 'Publicado en la web', tipo: 'switch', defecto: true }
+    ]
+  },
+  autores: {
+    etiqueta: 'Autores',
+    tituloCampo: 'nombre',
+    campos: [
+      { key: 'orden', label: 'Orden de aparición', tipo: 'numero' },
+      { key: 'nombre', label: 'Nombre y Apellido', tipo: 'texto', requerido: true },
+      { key: 'slug', label: 'Slug / Identificador URL (ej: mario-casas)', tipo: 'texto', requerido: true },
+      { key: 'foto_circulo_url', label: 'Foto de perfil / Retrato', tipo: 'imagen' },
+      { key: 'libro_publicado', label: 'Subtítulo o Libro destacado (ej: Autor de Punto Ciego)', tipo: 'texto' },
+      { key: 'bio_corta_popup', label: 'Biografía breve (para la web principal)', tipo: 'textarea' },
+      { key: 'bio_completa', label: 'Biografía extensa (para su propia landing)', tipo: 'textarea' },
+      { key: 'whatsapp_ventas', label: 'WhatsApp directo para venta de sus libros (ej: 5493816545858)', tipo: 'texto' },
+      { key: 'link_radio', label: 'Link de Radio / Podcast / Spotify (opcional)', tipo: 'texto' },
+      { key: 'texto_radio', label: 'Texto del botón de radio (ej: Escuchar en Vivo)', tipo: 'texto' },
+      { key: 'video_entrevista_url', label: 'Link de YouTube de entrevista (opcional)', tipo: 'texto' },
+      { key: 'prensa_medios', label: 'Prensa y otras entrevistas (Medio | Título | Link)', tipo: 'textarea' },
+      { key: 'color_primario', label: 'Color de fondo personalizado (ej: #121316)', tipo: 'texto' },
+      { key: 'color_acento', label: 'Color de detalles / botones (ej: #C85A38)', tipo: 'texto' },
+      { key: 'url_landing_google_sites', label: 'Link público final en Google Sites (opcional)', tipo: 'texto' },
+      { key: 'activo', label: 'Visible en la web', tipo: 'switch', defecto: true }
+    ]
+  },
+  talleres: {
+    etiqueta: 'Talleres',
+    tituloCampo: 'titulo',
+    campos: [
+      { key: 'titulo', label: 'Título', tipo: 'texto', requerido: true },
+      { key: 'facilitador', label: 'Facilitador/a', tipo: 'texto' },
+      { key: 'fecha_inicio', label: 'Fecha y hora de inicio', tipo: 'fecha' },
+      { key: 'fecha_fin', label: 'Fecha y hora de fin', tipo: 'fecha' },
+      { key: 'descripcion_corta', label: 'Descripción', tipo: 'textarea' },
+      { key: 'cupos_estado', label: 'Estado de cupos (ej: Cupos limitados)', tipo: 'texto' },
+      { key: 'imagen_url', label: 'Imagen', tipo: 'imagen' },
+      { key: 'link_inscripcion', label: 'Link de inscripción (opcional)', tipo: 'texto' },
+      { key: 'activo', label: 'Publicado en la web', tipo: 'switch', defecto: true }
+    ]
+  },
+  servicios: {
+    etiqueta: 'Servicios',
+    tituloCampo: 'titulo',
+    campos: [
+      { key: 'orden', label: 'Orden de aparición', tipo: 'numero' },
+      { key: 'titulo', label: 'Título', tipo: 'texto', requerido: true },
+      { key: 'resumen_home', label: 'Resumen breve (home)', tipo: 'textarea' },
+      { key: 'descripcion_completa', label: 'Descripción completa', tipo: 'textarea' },
+      { key: 'icono', label: 'Ícono', tipo: 'select', opciones: ['pluma','libro','diseno','isbn'] },
+      { key: 'imagen_url', label: 'Imagen', tipo: 'imagen' },
+      { key: 'items_incluidos', label: 'Qué incluye (separado por comas)', tipo: 'textarea' },
+      { key: 'precio', label: 'Precio a mostrar (ej: $140 o "A consultar")', tipo: 'texto' },
+      { key: 'es_combo_destacado', label: 'Destacar en el Home como combo', tipo: 'switch' },
+      { key: 'ejemplo_antes', label: 'Ejemplo: antes (opcional)', tipo: 'textarea' },
+      { key: 'ejemplo_despues', label: 'Ejemplo: después (opcional)', tipo: 'textarea' },
+      { key: 'activo', label: 'Publicado en la web', tipo: 'switch', defecto: true }
+    ]
+  },
+  agenda: {
+    etiqueta: 'Agenda',
+    tituloCampo: 'titulo',
+    campos: [
+      { key: 'titulo', label: 'Título del evento', tipo: 'texto', requerido: true },
+      { key: 'fecha_inicio', label: 'Fecha y hora de inicio', tipo: 'fecha' },
+      { key: 'fecha_fin', label: 'Fecha y hora de fin (opcional)', tipo: 'fecha' },
+      { key: 'modalidad_lugar', label: 'Lugar / modalidad', tipo: 'texto' },
+      { key: 'descripcion_corta', label: 'Descripción', tipo: 'textarea' },
+      { key: 'imagen_url', label: 'Imagen', tipo: 'imagen' },
+      { key: 'link_evento', label: 'Link de inscripción (opcional)', tipo: 'texto' },
+      { key: 'fotos_galeria', label: 'Fotos del evento ya realizado (opcional, separadas por coma)', tipo: 'textarea' },
+      { key: 'cronica_post_evento', label: 'Crónica posterior al evento (opcional)', tipo: 'textarea' },
+      { key: 'activo', label: 'Publicado en la web', tipo: 'switch', defecto: true }
+    ]
+  },
+  pedidos: {
+    etiqueta: 'Pedidos',
+    tituloCampo: 'nombre',
+    esPersonalizado: true
+  },
+  inscripciones: {
+    etiqueta: 'Inscripciones',
+    tituloCampo: 'nombre',
+    esPersonalizado: true
+  },
+  cotizador: {
+    etiqueta: 'Cotizador',
+    esCotizador: true
+  },
+  faq: {
+    etiqueta: 'FAQ',
+    tituloCampo: 'pregunta',
+    campos: [
+      { key: 'orden', label: 'Orden de aparición', tipo: 'numero' },
+      { key: 'pregunta', label: 'Pregunta', tipo: 'texto', requerido: true },
+      { key: 'respuesta', label: 'Respuesta', tipo: 'textarea', requerido: true },
+      { key: 'activo', label: 'Visible en la web', tipo: 'switch', defecto: true }
+    ]
+  }
+};
+
+// ---------- Arranque ----------
+if (TOKEN) {
+  google.script.run.withSuccessHandler(function(valido) {
+    if (valido) { mostrarDashboard(); } else { borrarSesionSegura('admin_token'); TOKEN = null; }
+  }).adminComprobarToken(TOKEN);
+}
+
+function intentarLogin(e) {
+  e.preventDefault();
+  var pass = document.getElementById('input-pass-admin').value;
+  document.getElementById('login-error').classList.add('oculto');
+  google.script.run
+    .withSuccessHandler(function(res) {
+      if (res.exito) {
+        TOKEN = res.token;
+        guardarSesionSegura('admin_token', TOKEN);
+        mostrarDashboard();
+      } else {
+        document.getElementById('login-error').textContent = res.error || 'Contraseña incorrecta.';
+        document.getElementById('login-error').classList.remove('oculto');
+      }
+    })
+    .withFailureHandler(function(err) {
+      document.getElementById('login-error').textContent = 'Error: ' + (err.message || err);
+      document.getElementById('login-error').classList.remove('oculto');
+    })
+    .adminValidarAcceso(pass);
+}
+
+function cerrarSesion() {
+  borrarSesionSegura('admin_token');
+  TOKEN = null;
+  document.getElementById('vista-dashboard').classList.add('oculto');
+  document.getElementById('vista-login').classList.remove('oculto');
+}
+
+function mostrarDashboard() {
+  document.getElementById('vista-login').classList.add('oculto');
+  document.getElementById('vista-dashboard').classList.remove('oculto');
+  renderizarTabs();
+  seleccionarTabla('libros');
+}
+
+function renderizarTabs() {
+  var cont = document.getElementById('tabs-contenedor');
+  cont.innerHTML = Object.keys(ESQUEMAS).map(function(k) {
+    return '<button class="tab-btn" id="tab-' + k + '" onclick="seleccionarTabla(\'' + k + '\')">' + ESQUEMAS[k].etiqueta + '</button>';
+  }).join('');
+}
+
+function seleccionarTabla(tabla) {
+  TABLA_ACTIVA = tabla;
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('activo'); });
+  document.getElementById('tab-' + tabla).classList.add('activo');
+  document.getElementById('titulo-tabla-activa').textContent = ESQUEMAS[tabla].etiqueta;
+  document.getElementById('panel-form').classList.add('oculto');
+
+  var panelCot = document.getElementById('panel-cotizador');
+  var barraAccion = document.querySelector('.barra-accion');
+  var listaItems = document.getElementById('lista-items');
+
+  if (ESQUEMAS[tabla].esCotizador) {
+    if (barraAccion) barraAccion.classList.add('oculto');
+    if (listaItems) listaItems.classList.add('oculto');
+    if (panelCot) {
+      panelCot.classList.remove('oculto');
+      iniciarPanelCotizador();
+    }
+    return;
+  }
+
+  if (barraAccion) barraAccion.classList.remove('oculto');
+  if (listaItems) listaItems.classList.remove('oculto');
+  if (panelCot) panelCot.classList.add('oculto');
+
+  document.getElementById('btn-agregar-item').style.display = ESQUEMAS[tabla].esPersonalizado ? 'none' : 'inline-flex';
+  cargarLista();
+}
+
+function mostrarToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.remove('oculto');
+  setTimeout(function() { t.classList.add('oculto'); }, 2200);
+}
+
+function manejarErrorSesion(err) {
+  var msg = (err && err.message) ? err.message : String(err);
+  if (msg.indexOf('sesión') !== -1 || msg.indexOf('sesion') !== -1) {
+    alert('Tu sesión expiró. Volvé a ingresar la contraseña.');
+    cerrarSesion();
+  } else {
+    alert('Ocurrió un error: ' + msg);
+  }
+}
+
+// ---------- Listado ----------
+function cargarLista() {
+  document.getElementById('lista-items').innerHTML = '<p class="vacio-msg">Cargando…</p>';
+  google.script.run
+    .withSuccessHandler(function(items) {
+      CACHE_ITEMS = items || [];
+      renderizarLista();
+    })
+    .withFailureHandler(manejarErrorSesion)
+    .adminListarTabla(TOKEN, TABLA_ACTIVA);
+}
+
+function renderizarLista() {
+  var esquema = ESQUEMAS[TABLA_ACTIVA];
+  if (esquema.esPersonalizado) {
+    if (TABLA_ACTIVA === 'inscripciones') { renderizarListaInscripciones(); return; }
+    renderizarListaPedidos();
+    return;
+  }
+  var cont = document.getElementById('lista-items');
+
+  if (!CACHE_ITEMS.length) {
+    cont.innerHTML = '<p class="vacio-msg">Todavía no hay elementos cargados acá.</p>';
+    return;
+  }
+
+  var campoImg = esquema.campos.find(function(c) { return c.tipo === 'imagen'; });
+  var campoSwitchPrincipal = esquema.campos.find(function(c) { return c.key === 'activo'; });
+
+  cont.innerHTML = CACHE_ITEMS.map(function(item, idx) {
+    var img = campoImg && item[campoImg.key] ? item[campoImg.key] : '';
+    var imgHtml = img
+      ? '<img class="miniatura" src="' + img + '" onerror="this.style.visibility=\'hidden\'">'
+      : '<div class="miniatura"></div>';
+    var titulo = item[esquema.tituloCampo] || '(sin título)';
+    var activo = campoSwitchPrincipal ? !!item.activo : true;
+
+    var botonesAutorExtra = '';
+    if (TABLA_ACTIVA === 'autores' && item.id) {
+      botonesAutorExtra = 
+        '<button class="btn btn-chico" onclick="copiarLinkEmbedAutor(\'' + (item.slug || item.id) + '\')" title="Copiar link para embeber en Google Sites">📋 Link Sites</button>' +
+        '<button class="btn btn-terracota btn-chico" onclick="abrirGestorBitacora(\'' + item.id + '\', \'' + escapeHtmlAdmin(item.nombre) + '\')" title="Gestionar lugares y obras">🗺️ Bitácora</button>' +
+        '<button class="btn btn-chico" onclick="abrirGestorEscritos(\'' + item.id + '\', \'' + escapeHtmlAdmin(item.nombre) + '\')" title="Gestionar poemas y textos breves">✒️ Poemas</button>';
+    }
+
+    return '<div class="item-card">' +
+      imgHtml +
+      '<div class="item-info">' +
+        '<div class="titulo">' + escapeHtmlAdmin(titulo) + '</div>' +
+        '<div class="sub">' + (activo ? 'Publicado' : 'Oculto') + (item.slug ? ' · ?autor=' + escapeHtmlAdmin(item.slug) : '') + '</div>' +
+      '</div>' +
+      '<div class="item-acciones">' +
+        botonesAutorExtra +
+        (campoSwitchPrincipal ?
+          '<label class="switch" title="Publicado / Oculto">' +
+            '<input type="checkbox" ' + (activo ? 'checked' : '') + ' onchange="cambiarActivoRapido(' + idx + ', this.checked)">' +
+            '<span class="switch-track"></span>' +
+          '</label>' : '') +
+        '<button class="icon-btn" onclick="abrirFormulario(' + idx + ')" title="Editar">✎</button>' +
+        '<button class="icon-btn" onclick="borrarItem(' + idx + ')" title="Eliminar">🗑</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function cambiarActivoRapido(idx, valor) {
+  var item = CACHE_ITEMS[idx];
+  item.activo = valor;
+  google.script.run
+    .withSuccessHandler(function() { mostrarToast(valor ? 'Publicado' : 'Ocultado'); })
+    .withFailureHandler(manejarErrorSesion)
+    .adminGuardarFila(TOKEN, TABLA_ACTIVA, item);
+}
+
+function borrarItem(idx) {
+  var item = CACHE_ITEMS[idx];
+  var esquema = ESQUEMAS[TABLA_ACTIVA];
+  var nombre = item[esquema.tituloCampo] || 'este elemento';
+  if (!confirm('¿Eliminar "' + nombre + '"? Esta acción no se puede deshacer.')) return;
+
+  google.script.run
+    .withSuccessHandler(function() { mostrarToast('Eliminado'); cargarLista(); })
+    .withFailureHandler(manejarErrorSesion)
+    .adminEliminarFila(TOKEN, TABLA_ACTIVA, item._fila);
+}
+
+// ---------- Vista especial: Pedidos ----------
+function renderizarListaPedidos() {
+  var cont = document.getElementById('lista-items');
+  if (!CACHE_ITEMS.length) {
+    cont.innerHTML = '<p class="vacio-msg">Todavía no llegó ningún pedido.</p>';
+    return;
+  }
+
+  var ordenados = CACHE_ITEMS.slice().sort(function(a, b) {
+    var aPend = a.estado !== 'Enviado', bPend = b.estado !== 'Enviado';
+    if (aPend === bPend) return 0;
+    return aPend ? -1 : 1;
+  });
+
+  cont.innerHTML = ordenados.map(function(p) {
+    var esPendiente = p.estado !== 'Enviado';
+    var comprobanteHtml = p.comprobante_url
+      ? '<a href="' + p.comprobante_url + '" target="_blank" title="Ver comprobante"><img class="miniatura" src="' + p.comprobante_url + '" onerror="this.style.visibility=\'hidden\'"></a>'
+      : '<div class="miniatura" style="display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--media);text-align:center;">Sin comprobante</div>';
+
+    return '<div class="item-card">' +
+      comprobanteHtml +
+      '<div class="item-info">' +
+        '<div class="titulo">' + escapeHtmlAdmin(p.nombre) + ' — ' + escapeHtmlAdmin(p.libro_titulo) + '</div>' +
+        '<div class="sub">' + escapeHtmlAdmin(p.email) + ' · ' + escapeHtmlAdmin(p.whatsapp) + '</div>' +
+        '<div class="sub">' + (esPendiente ? '🟠 Pendiente' : '🟢 Enviado') + '</div>' +
+      '</div>' +
+      '<div class="item-acciones">' +
+        (esPendiente ? '<button class="btn btn-terracota btn-chico" onclick="enviarLibroPedido(' + p._fila + ')">Enviar libro</button>' : '') +
+        '<button class="icon-btn" onclick="borrarPedido(' + p._fila + ')" title="Eliminar">🗑</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function enviarLibroPedido(numeroFila) {
+  if (!confirm('¿Enviar el ebook por mail a este comprador?')) return;
+  google.script.run
+    .withSuccessHandler(function() { mostrarToast('Libro enviado ✓'); cargarLista(); })
+    .withFailureHandler(manejarErrorSesion)
+    .adminEnviarLibro(TOKEN, numeroFila);
+}
+
+function borrarPedido(numeroFila) {
+  if (!confirm('¿Eliminar este pedido de la lista?')) return;
+  google.script.run
+    .withSuccessHandler(function() { mostrarToast('Eliminado'); cargarLista(); })
+    .withFailureHandler(manejarErrorSesion)
+    .adminEliminarFila(TOKEN, 'pedidos', numeroFila);
+}
+
+// ---------- VISTA ESPECIAL: MINI-CRM DE INSCRIPCIONES ----------
+function renderizarListaInscripciones() {
+  var cont = document.getElementById('lista-items');
+  if (!CACHE_ITEMS.length) {
+    cont.innerHTML = '<p class="vacio-msg">Todavía no hay participantes inscriptos a ningún taller o evento.</p>';
+    return;
+  }
+
+  var ordenados = CACHE_ITEMS.slice().sort(function(a, b) {
+    var aPend = a.estado !== 'Confirmado', bPend = b.estado !== 'Confirmado';
+    if (aPend === bPend) return 0;
+    return aPend ? -1 : 1;
+  });
+
+  cont.innerHTML = ordenados.map(function(ins) {
+    var esPendiente = ins.estado !== 'Confirmado';
+    var waLimpio = String(ins.whatsapp || '').replace(/\D/g, '');
+    var waUrl = waLimpio ? ('https://wa.me/' + waLimpio + '?text=' + encodeURIComponent('¡Hola ' + ins.nombre + '! Te escribo desde Lorem Ipsum Editorial por tu inscripción al taller "' + ins.taller_titulo + '".')) : '#';
+
+    return '<div class="item-card">' +
+      '<div class="miniatura" style="display:flex;align-items:center;justify-content:center;font-size:22px;background:rgba(200,90,56,0.1);color:var(--terracota);border:1px solid var(--borde);">' +
+        '🎟️' +
+      '</div>' +
+      '<div class="item-info">' +
+        '<div class="titulo">' + escapeHtmlAdmin(ins.nombre) + ' — <span style="color:var(--terracota);">' + escapeHtmlAdmin(ins.taller_titulo) + '</span></div>' +
+        '<div class="sub">' + escapeHtmlAdmin(ins.email) + ' · 📱 ' + escapeHtmlAdmin(ins.whatsapp) + '</div>' +
+        (ins.mensaje ? '<div class="sub" style="color:var(--arena);font-style:italic;margin-top:4px;">💬 "' + escapeHtmlAdmin(ins.mensaje) + '"</div>' : '') +
+        '<div class="sub" style="margin-top:4px;">' + (esPendiente ? '🟠 Cupo Pendiente' : '🟢 Cupo Confirmado') + '</div>' +
+      '</div>' +
+      '<div class="item-acciones">' +
+        (esPendiente ? '<button class="btn btn-terracota btn-chico" onclick="confirmarCupoInscripcion(' + ins._fila + ')">Confirmar cupo</button>' : '') +
+        (waLimpio ? '<a href="' + waUrl + '" target="_blank" class="btn btn-chico" style="text-decoration:none;">Chatear</a>' : '') +
+        '<button class="icon-btn" onclick="borrarInscripcion(' + ins._fila + ')" title="Eliminar">🗑</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function confirmarCupoInscripcion(numeroFila) {
+  google.script.run
+    .withSuccessHandler(function() { 
+      mostrarToast('¡Cupo confirmado con éxito! ✓'); 
+      cargarLista(); 
+    })
+    .withFailureHandler(manejarErrorSesion)
+    .adminConfirmarInscripcion(TOKEN, numeroFila);
+}
+
+function borrarInscripcion(numeroFila) {
+  if (!confirm('¿Eliminar esta inscripción del registro?')) return;
+  google.script.run
+    .withSuccessHandler(function() { 
+      mostrarToast('Inscripción eliminada'); 
+      cargarLista(); 
+    })
+    .withFailureHandler(manejarErrorSesion)
+    .adminEliminarFila(TOKEN, 'inscripciones', numeroFila);
+}
+
+// ---------- Formulario ----------
+function abrirFormulario(idx) {
+  EDITANDO_FILA = (idx === null) ? null : CACHE_ITEMS[idx];
+  var esquema = ESQUEMAS[TABLA_ACTIVA];
+  var panel = document.getElementById('panel-form');
+
+  var html = '<h3>' + (EDITANDO_FILA ? 'Editar' : 'Agregar nuevo') + ' — ' + esquema.etiqueta + '</h3>';
+  html += '<form id="form-item" onsubmit="guardarFormulario(event)">';
+
+  esquema.campos.forEach(function(c) {
+    var valorActual = EDITANDO_FILA ? EDITANDO_FILA[c.key] : (c.defecto !== undefined ? c.defecto : '');
+    html += renderizarCampo(c, valorActual);
+  });
+
+  html += '<div class="form-botones">' +
+    '<button type="button" class="btn" onclick="cerrarFormulario()">Cancelar</button>' +
+    '<button type="submit" class="btn btn-terracota">Guardar</button>' +
+  '</div></form>';
+
+  panel.innerHTML = html;
+  panel.classList.remove('oculto');
+  panel.scrollIntoView({ behavior: 'smooth' });
+}
+
+function cerrarFormulario() {
+  document.getElementById('panel-form').classList.add('oculto');
+  document.getElementById('panel-form').innerHTML = '';
+  EDITANDO_FILA = null;
+}
+
+function renderizarCampo(c, valor) {
+  var idInput = 'campo-' + c.key;
+  valor = (valor === undefined || valor === null) ? '' : valor;
+
+  if (c.tipo === 'switch') {
+    return '<label class="campo campo-switch">' +
+      '<span>' + c.label + '</span>' +
+      '<label class="switch">' +
+        '<input type="checkbox" id="' + idInput + '" ' + (valor ? 'checked' : '') + '>' +
+        '<span class="switch-track"></span>' +
+      '</label>' +
+    '</label>';
+  }
+  if (c.tipo === 'textarea') {
+    return '<label class="campo">' + c.label +
+      '<textarea id="' + idInput + '">' + escapeHtmlAdmin(valor) + '</textarea>' +
+    '</label>';
+  }
+  if (c.tipo === 'numero') {
+    return '<label class="campo">' + c.label +
+      '<input type="number" id="' + idInput + '" value="' + escapeHtmlAdmin(valor) + '">' +
+    '</label>';
+  }
+  if (c.tipo === 'fecha') {
+    return '<label class="campo">' + c.label +
+      '<input type="datetime-local" id="' + idInput + '" value="' + escapeHtmlAdmin(valor) + '">' +
+    '</label>';
+  }
+  if (c.tipo === 'select') {
+    var opts = c.opciones.map(function(o) {
+      return '<option value="' + o + '" ' + (o === valor ? 'selected' : '') + '>' + o + '</option>';
+    }).join('');
+    return '<label class="campo">' + c.label +
+      '<select id="' + idInput + '">' + opts + '</select>' +
+    '</label>';
+  }
+  if (c.tipo === 'imagen') {
+    var previewSrc = valor || '';
+    var mostrar = valor ? 'display:block;' : 'display:none;';
+    return '<label class="campo">' + c.label +
+      '<div class="img-upload-wrap">' +
+        '<img class="img-upload-preview" id="' + idInput + '-preview" src="' + previewSrc + '" style="' + mostrar + '">' +
+        '<div style="flex:1;">' +
+          '<input type="file" accept="image/*" onchange="subirImagenCampo(this, \'' + idInput + '\')">' +
+          '<div class="img-upload-estado" id="' + idInput + '-estado"></div>' +
+        '</div>' +
+      '</div>' +
+      '<input type="hidden" id="' + idInput + '" value="' + escapeHtmlAdmin(valor) + '">' +
+    '</label>';
+  }
+  return '<label class="campo">' + c.label +
+    '<input type="text" id="' + idInput + '" value="' + escapeHtmlAdmin(valor) + '">' +
+  '</label>';
+}
+
+function subirImagenCampo(inputEl, idCampo) {
+  var file = inputEl.files[0];
+  if (!file) return;
+  var estadoEl = document.getElementById(idCampo + '-estado');
+  estadoEl.textContent = 'Subiendo…';
+
+  var reader = new FileReader();
+  reader.onload = function() {
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (res.exito) {
+          document.getElementById(idCampo).value = res.url;
+          var prev = document.getElementById(idCampo + '-preview');
+          prev.src = res.url;
+          prev.style.display = 'block';
+          estadoEl.textContent = 'Imagen subida ✓';
+        } else {
+          estadoEl.textContent = 'Error: ' + res.error;
+        }
+      })
+      .withFailureHandler(function(err) { estadoEl.textContent = 'Error: ' + (err.message || err); })
+      .adminSubirImagenDrive(TOKEN, reader.result, TABLA_ACTIVA);
+  };
+  reader.readAsDataURL(file);
+}
+
+function guardarFormulario(e) {
+  e.preventDefault();
+  var esquema = ESQUEMAS[TABLA_ACTIVA];
+  var datos = EDITANDO_FILA ? Object.assign({}, EDITANDO_FILA) : {};
+
+  esquema.campos.forEach(function(c) {
+    var el = document.getElementById('campo-' + c.key);
+    if (!el) return;
+    if (c.tipo === 'switch') {
+      datos[c.key] = el.checked;
+    } else {
+      datos[c.key] = el.value;
+    }
+  });
+
+  var camposRequeridos = esquema.campos.filter(function(c) { return c.requerido; });
+  for (var i = 0; i < camposRequeridos.length; i++) {
+    var k = camposRequeridos[i].key;
+    if (!datos[k]) { alert('Falta completar: ' + camposRequeridos[i].label); return; }
+  }
+
+  google.script.run
+    .withSuccessHandler(function() {
+      mostrarToast('Guardado correctamente');
+      cerrarFormulario();
+      cargarLista();
+    })
+    .withFailureHandler(manejarErrorSesion)
+    .adminGuardarFila(TOKEN, TABLA_ACTIVA, datos);
+}
+
+function escapeHtmlAdmin(t) {
+  if (t === null || t === undefined) return '';
+  return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function copiarLinkEmbedAutor(slug) {
+  var parametroFinal = '?autor=' + encodeURIComponent(slug);
+
+  navigator.clipboard.writeText(parametroFinal).then(function() {
+    mostrarToast('¡Copiado: ' + parametroFinal + '! Pegalo al final de tu link .exec');
+  }).catch(function() {
+    prompt('Copiá esto y pegalo al final de tu link .exec:', parametroFinal);
+  });
+}
+
+// ---------- GESTOR MÓVIL DE BITÁCORA / LUGARES ----------
+var BITACORA_AUTOR_ACTUAL = null;
+var BITACORA_ITEMS_TEMP = [];
+
+function abrirGestorBitacora(autorId, autorNombre) {
+  BITACORA_AUTOR_ACTUAL = autorId;
+  var panel = document.getElementById('panel-form');
+  panel.innerHTML = '<p class="vacio-msg">Cargando bitácora de ' + autorNombre + '…</p>';
+  panel.classList.remove('oculto');
+  panel.scrollIntoView({ behavior: 'smooth' });
+
+  google.script.run
+    .withSuccessHandler(function(res) {
+      if (res && res.exito) {
+        BITACORA_ITEMS_TEMP = res.items || [];
+        renderizarPanelBitacora(autorNombre);
+      } else {
+        alert('Error al cargar bitácora: ' + (res.error || 'Desconocido'));
+        cerrarFormulario();
+      }
+    })
+    .withFailureHandler(manejarErrorSesion)
+    .adminObtenerBitacoraAutor(TOKEN, autorId);
+}
+
+function renderizarPanelBitacora(autorNombre) {
+  var panel = document.getElementById('panel-form');
+  var html = '<h3>🗺️ Bitácora y Lugares de ' + escapeHtmlAdmin(autorNombre) + '</h3>';
+  html += '<p style="color:var(--media);font-size:12px;margin-bottom:16px;">Subí fotos desde tu celular con su título y anécdota. Se ordenan solas en el circuito de su web.</p>';
+
+  html += '<div style="background:rgba(0,0,0,0.3);padding:14px;border-radius:8px;border:1px solid var(--borde);margin-bottom:20px;">' +
+    '<strong style="font-family:var(--mono);font-size:11px;color:var(--terracota);text-transform:uppercase;">+ Agregar nuevo lugar u obra:</strong>' +
+    '<label class="campo" style="margin-top:10px;">Foto desde el celular' +
+      '<div class="img-upload-wrap">' +
+        '<img id="bitacora-prev-img" class="img-upload-preview">' +
+        '<div style="flex:1;">' +
+          '<input type="file" accept="image/*" onchange="subirFotoBitacora(this)">' +
+          '<div class="img-upload-estado" id="bitacora-estado-subida"></div>' +
+        '</div>' +
+      '</div>' +
+      '<input type="hidden" id="bitacora-input-url">' +
+    '</label>' +
+    '<label class="campo">Título del lugar u obra (ej: Café Tortoni)' +
+      '<input type="text" id="bitacora-input-titulo" placeholder="Nombre del escenario o cuadro">' +
+    '</label>' +
+    '<label class="campo">Texto explicativo / Fragmento' +
+      '<textarea id="bitacora-input-desc" placeholder="Contá qué sucede acá en el libro o detalles de la obra..."></textarea>' +
+    '</label>' +
+    '<button type="button" class="btn btn-terracota" onclick="agregarItemBitacora()" style="margin-top:6px;">Agregar a la lista</button>' +
+  '</div>';
+
+  html += '<h4 style="font-size:1rem;margin-bottom:10px;">Elementos cargados (' + BITACORA_ITEMS_TEMP.length + ')</h4>';
+  if (!BITACORA_ITEMS_TEMP.length) {
+    html += '<p style="font-size:12px;color:var(--media);margin-bottom:16px;">Todavía no hay lugares u obras cargadas.</p>';
+  } else {
+    html += '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">';
+    BITACORA_ITEMS_TEMP.forEach(function(it, i) {
+      html += '<div style="display:flex;gap:10px;align-items:center;background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:6px;border:1px solid var(--borde);">' +
+        (it.imagen_url ? '<img src="' + it.imagen_url + '" style="width:40px;height:40px;object-fit:contain;background:#000;border-radius:4px;">' : '') +
+        '<div style="flex:1;min-width:0;">' +
+          '<strong style="font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escapeHtmlAdmin(it.titulo) + '</strong>' +
+          '<span style="font-size:11px;color:var(--media);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escapeHtmlAdmin(it.descripcion) + '</span>' +
+        '</div>' +
+        '<button class="icon-btn" onclick="eliminarItemBitacora(' + i + ')" title="Quitar">🗑</button>' +
+      '</div>';
+    });
+    html += '</div>';
+  }
+
+  html += '<div class="form-botones">' +
+    '<button type="button" class="btn" onclick="cerrarFormulario()">Cancelar</button>' +
+    '<button type="button" class="btn btn-terracota" onclick="guardarCambiosBitacora()">Guardar en la Web del Autor</button>' +
+  '</div>';
+
+  panel.innerHTML = html;
+}
+
+function subirFotoBitacora(inputEl) {
+  var file = inputEl.files[0];
+  if (!file) return;
+  var estadoEl = document.getElementById('bitacora-estado-subida');
+  estadoEl.textContent = 'Subiendo desde el cel…';
+
+  var reader = new FileReader();
+  reader.onload = function() {
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (res.exito) {
+          document.getElementById('bitacora-input-url').value = res.url;
+          var prev = document.getElementById('bitacora-prev-img');
+          prev.src = res.url;
+          prev.style.display = 'block';
+          estadoEl.textContent = 'Foto subida ✓';
+        } else {
+          estadoEl.textContent = 'Error: ' + res.error;
+        }
+      })
+      .withFailureHandler(function(err) { estadoEl.textContent = 'Error: ' + (err.message || err); })
+      .adminSubirImagenDrive(TOKEN, reader.result, 'Bitacora');
+  };
+  reader.readAsDataURL(file);
+}
+
+function agregarItemBitacora() {
+  var url = document.getElementById('bitacora-input-url').value.trim();
+  var titulo = document.getElementById('bitacora-input-titulo').value.trim();
+  var desc = document.getElementById('bitacora-input-desc').value.trim();
+
+  if (!url) { alert('Subí una foto primero.'); return; }
+  if (!titulo) { alert('Completá el título del lugar u obra.'); return; }
+
+  BITACORA_ITEMS_TEMP.push({
+    imagen_url: url,
+    titulo: titulo,
+    descripcion: desc
+  });
+
+  mostrarToast('Elemento agregado a la lista');
+  var autor = CACHE_ITEMS.find(function(a) { return a.id === BITACORA_AUTOR_ACTUAL; });
+  renderizarPanelBitacora(autor ? autor.nombre : 'Autor');
+}
+
+function eliminarItemBitacora(idx) {
+  BITACORA_ITEMS_TEMP.splice(idx, 1);
+  var autor = CACHE_ITEMS.find(function(a) { return a.id === BITACORA_AUTOR_ACTUAL; });
+  renderizarPanelBitacora(autor ? autor.nombre : 'Autor');
+}
+
+function guardarCambiosBitacora() {
+  google.script.run
+    .withSuccessHandler(function() {
+      mostrarToast('¡Bitácora guardada con éxito en la web del autor!');
+      cerrarFormulario();
+      cargarLista();
+    })
+    .withFailureHandler(manejarErrorSesion)
+    .adminGuardarBitacoraAutor(TOKEN, BITACORA_AUTOR_ACTUAL, BITACORA_ITEMS_TEMP);
+}
+
+// ---------- GESTOR DE POEMAS Y ESCRITOS ----------
+var ESCRITOS_AUTOR_ACTUAL = null;
+var NOMBRE_AUTOR_ESCRITOS = '';
+var ESCRITOS_ITEMS_TEMP = [];
+
+function abrirGestorEscritos(autorId, autorNombre) {
+  ESCRITOS_AUTOR_ACTUAL = autorId;
+  NOMBRE_AUTOR_ESCRITOS = autorNombre;
+  var panel = document.getElementById('panel-form');
+  panel.innerHTML = '<p class="vacio-msg">Cargando poemas de ' + escapeHtmlAdmin(autorNombre) + '…</p>';
+  panel.classList.remove('oculto');
+  panel.scrollIntoView({ behavior: 'smooth' });
+
+  google.script.run
+    .withSuccessHandler(function(res) {
+      if (res && res.exito) {
+        ESCRITOS_ITEMS_TEMP = res.items || [];
+        renderizarPanelEscritos(autorNombre);
+      } else {
+        panel.innerHTML = '<p class="error-msg" style="text-align:center;padding:16px;">Error: ' + escapeHtmlAdmin((res && res.error) ? res.error : 'No se pudo cargar la lista') + '</p><div style="text-align:center;"><button class="btn btn-chico" onclick="cerrarFormulario()">Cerrar</button></div>';
+      }
+    })
+    .withFailureHandler(function(err) {
+      var msg = (err && err.message) ? err.message : String(err);
+      panel.innerHTML = '<p class="error-msg" style="text-align:center;padding:16px;">Error al conectar: ' + escapeHtmlAdmin(msg) + '</p><div style="text-align:center;"><button class="btn btn-chico" onclick="cerrarFormulario()">Cerrar</button></div>';
+    })
+    .adminObtenerEscritosAutor(TOKEN, autorId);
+}
+
+function renderizarPanelEscritos(autorNombre) {
+  var panel = document.getElementById('panel-form');
+  var html = '<h3>✒️ Poemas y Escritos de ' + escapeHtmlAdmin(autorNombre) + '</h3>';
+  html += '<p style="color:var(--media);font-size:12px;margin-bottom:16px;">Cargá hasta 3 o 4 poemas o fragmentos. Presioná Enter para cada verso y doble Enter para separar estrofas.</p>';
+
+  html += '<div style="background:rgba(0,0,0,0.3);padding:14px;border-radius:8px;border:1px solid var(--borde);margin-bottom:20px;">' +
+    '<strong style="font-family:var(--mono);font-size:11px;color:var(--terracota);text-transform:uppercase;">+ Agregar nuevo poema o escrito:</strong>' +
+    '<label class="campo" style="margin-top:10px;">Título de la obra (ej: Elegía al río)' +
+      '<input type="text" id="escrito-input-titulo" placeholder="Título del poema o fragmento">' +
+    '</label>' +
+    '<label class="campo">Versos / Estrofas completas' +
+      '<textarea id="escrito-input-texto" rows="7" style="font-family:serif;font-size:15px;font-style:italic;line-height:1.7;white-space:pre-wrap;" placeholder="Escribí los versos acá...\nPresioná Enter para pasar al siguiente verso.\n\nDoble Enter para una nueva estrofa."></textarea>' +
+    '</label>' +
+    '<button type="button" class="btn btn-terracota" onclick="agregarItemEscrito()" style="margin-top:6px;">Agregar poema a la lista</button>' +
+  '</div>';
+
+  html += '<h4 style="font-size:1rem;margin-bottom:10px;">Poemas cargados (' + ESCRITOS_ITEMS_TEMP.length + ')</h4>';
+  if (!ESCRITOS_ITEMS_TEMP.length) {
+    html += '<p style="font-size:12px;color:var(--media);margin-bottom:16px;">Todavía no hay poemas ni escritos cargados para este autor.</p>';
+  } else {
+    html += '<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">';
+    ESCRITOS_ITEMS_TEMP.forEach(function(it, i) {
+      var primerVerso = (it.texto || '').split('\n')[0] || '';
+      html += '<div style="display:flex;gap:12px;align-items:center;background:rgba(255,255,255,0.03);padding:10px 14px;border-radius:6px;border:1px solid var(--borde);">' +
+        '<div style="font-size:20px;color:var(--terracota);">📜</div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<strong style="font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escapeHtmlAdmin(it.titulo) + '</strong>' +
+          '<span style="font-size:12px;color:var(--media);font-style:italic;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">"' + escapeHtmlAdmin(primerVerso) + '..."</span>' +
+        '</div>' +
+        '<button class="icon-btn" onclick="eliminarItemEscrito(' + i + ')" title="Quitar">🗑</button>' +
+      '</div>';
+    });
+    html += '</div>';
+  }
+
+  html += '<div class="form-botones">' +
+    '<button type="button" class="btn" onclick="cerrarFormulario()">Cancelar</button>' +
+    '<button type="button" class="btn btn-terracota" onclick="guardarCambiosEscritos()">Guardar en la Web del Autor</button>' +
+  '</div>';
+
+  panel.innerHTML = html;
+}
+
+function agregarItemEscrito() {
+  var titulo = document.getElementById('escrito-input-titulo').value.trim();
+  var texto = document.getElementById('escrito-input-texto').value.trim();
+
+  if (!titulo) { alert('Completá el título del poema o escrito.'); return; }
+  if (!texto) { alert('Escribí los versos del poema.'); return; }
+
+  ESCRITOS_ITEMS_TEMP.push({
+    titulo: titulo,
+    texto: texto
+  });
+
+  mostrarToast('Poema agregado a la lista');
+  renderizarPanelEscritos(NOMBRE_AUTOR_ESCRITOS || 'Autor');
+}
+
+function eliminarItemEscrito(idx) {
+  ESCRITOS_ITEMS_TEMP.splice(idx, 1);
+  renderizarPanelEscritos(NOMBRE_AUTOR_ESCRITOS || 'Autor');
+}
+
+function guardarCambiosEscritos() {
+  google.script.run
+    .withSuccessHandler(function() {
+      mostrarToast('¡Poemas guardados con éxito en la web del autor!');
+      cerrarFormulario();
+      cargarLista();
+    })
+    .withFailureHandler(manejarErrorSesion)
+    .adminGuardarEscritosAutor(TOKEN, ESCRITOS_AUTOR_ACTUAL, ESCRITOS_ITEMS_TEMP);
+}
+
+// ==========================================================================
+// MOTOR DEL COTIZADOR EDITORIAL: PAQUETES, A MEDIDA, ANTOLOGÍA Y PESO
+// ==========================================================================
+var COTIZADOR_FACTOR = 1.0;
+var COTIZADOR_FIJOS = { isbn: 25000, cal: 45000, extraBookcell: 450, extraSolapas: 1500 };
+
+var TABLAS_IMPRENTA = {
+  byn: {
+    '14.8x21': {
+      50:  { intercepto: 1984.00, pendiente: 41.625, pesoBase: 35 },
+      100: { intercepto: 1581.14, pendiente: 33.143, pesoBase: 35 },
+      300: { intercepto: 1262.71, pendiente: 27.652, pesoBase: 35 },
+      600: { intercepto: 1193.14, pendiente: 25.143, pesoBase: 35 }
+    },
+    '12.8x18': {
+      50:  { intercepto: 1983.43, pendiente: 28.054, pesoBase: 28 },
+      100: { intercepto: 1580.43, pendiente: 23.554, pesoBase: 28 },
+      300: { intercepto: 1263.43, pendiente: 20.054, pesoBase: 28 },
+      600: { intercepto: 1192.43, pendiente: 17.554, pesoBase: 28 }
+    },
+    '18x25.5': {
+      50:  { intercepto: 2777.00, pendiente: 56.104, pesoBase: 48 },
+      100: { intercepto: 2282.00, pendiente: 47.104, pesoBase: 48 },
+      300: { intercepto: 1900.00, pendiente: 40.104, pesoBase: 48 }
+    }
+  },
+  color: {
+    '14.8x21': {
+      50:  { intercepto: 1983.64, pendiente: 93.848, pesoBase: 35 },
+      100: { intercepto: 1580.43, pendiente: 83.857, pesoBase: 35 },
+      200: { intercepto: 1422.64, pendiente: 79.348, pesoBase: 35 },
+      300: { intercepto: 1263.64, pendiente: 74.848, pesoBase: 35 }
+    }
+  }
+};
+
+var ESCALA_VIACARGO = [[7, 67000], [15, 86000], [25, 117000]];
+
+function iniciarPanelCotizador() {
+  var panel = document.getElementById('panel-cotizador');
+  panel.innerHTML = '<p class="vacio-msg">Cargando tarifas y configuración del cotizador…</p>';
+
+  google.script.run
+    .withSuccessHandler(function(res) {
+      if (res && res.exito) {
+        COTIZADOR_FACTOR = res.factorInflacion || 1.0;
+        if (res.costosFijos) COTIZADOR_FIJOS = Object.assign(COTIZADOR_FIJOS, res.costosFijos);
+      }
+      renderizarInterfazCotizador();
+    })
+    .withFailureHandler(function() {
+      renderizarInterfazCotizador();
+    })
+    .adminObtenerConfigCotizador(TOKEN);
+}
+
+function renderizarInterfazCotizador() {
+  var panel = document.getElementById('panel-cotizador');
+  var inflaPorc = Math.round((COTIZADOR_FACTOR - 1.0) * 100);
+
+  var html = '<div style="margin-bottom:20px;">' +
+    '<h2 style="font-size:1.5rem;margin-bottom:4px;">Calculadora & Cotizador Editorial</h2>' +
+    '<p style="color:var(--media);font-size:12.5px;">Herramienta interna para cotizar paquetes cerrados, libros a medida y antologías con piso de autores.</p>' +
+  '</div>';
+
+  // 1. BOLA DE NIEVE (INFLACIÓN)
+  html += '<div style="background:rgba(200,90,56,0.08);border:1px solid rgba(200,90,56,0.3);padding:16px;border-radius:10px;margin-bottom:24px;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">' +
+      '<div>' +
+        '<span style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--terracota);display:block;">Aumento de Imprenta Acumulado (Bola de Nieve)</span>' +
+        '<strong style="font-size:1.25rem;color:var(--arena);">' + (inflaPorc >= 0 ? '+' : '') + inflaPorc + '% sobre precios base</strong>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px;align-items:center;">' +
+        '<input type="number" id="cot-inflacion-input" placeholder="% aumento" style="width:110px;margin:0;padding:8px 10px;" step="0.5">' +
+        '<button type="button" class="btn btn-terracota btn-chico" onclick="aplicarAumentoInflacion()">Aplicar %</button>' +
+        '<button type="button" class="btn btn-chico" onclick="resetearInflacion()" title="Volver a base original">Reset</button>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+
+  // 2. PAQUETES CERRADOS RÁPIDOS Y LIMPIEZA
+  html += '<div style="background:var(--glass);border:1px solid var(--borde);padding:18px;border-radius:10px;margin-bottom:24px;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">' +
+      '<span style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--media);">Paquetes Estándar (Acceso rápido en 1 clic)</span>' +
+      '<button type="button" class="btn btn-chico" onclick="limpiarCamposCotizador()" style="font-size:10px;padding:4px 10px;">🧹 Limpiar campos</button>' +
+    '</div>' +
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+      '<button type="button" class="btn btn-chico" onclick="cargarPaqueteEstandar(50, 100, false, false, 650000)">50u · 100p · Obra ($650k)</button>' +
+      '<button type="button" class="btn btn-chico" onclick="cargarPaqueteEstandar(50, 100, true, false, 750000)">50u · 100p · Bookcell ($750k)</button>' +
+      '<button type="button" class="btn btn-terracota btn-chico" onclick="cargarPaqueteEstandar(100, 100, true, false, 1300000)">⭐ 100u · 100p · Bookcell ($1.300.000)</button>' +
+    '</div>' +
+  '</div>';
+
+  // 3. FORMULARIO A MEDIDA
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">' +
+    '<div style="background:var(--glass);border:1px solid var(--borde);padding:20px;border-radius:10px;">' +
+      '<span style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--terracota);display:block;margin-bottom:14px;">1. Especificaciones del Libro</span>' +
+      '<label class="campo">Tipo de Impresión' +
+        '<select id="cot-tipo" onchange="calcularCotizacion()"><option value="byn" selected>Blanco y Negro</option><option value="color">Todo Color</option></select>' +
+      '</label>' +
+      '<label class="campo">Formato' +
+        '<select id="cot-formato" onchange="calcularCotizacion()">' +
+          '<option value="14.8x21" selected>Comercial A5 (14,8 x 21 cm)</option>' +
+          '<option value="12.8x18">Bolsillo B6 (12,8 x 18 cm)</option>' +
+          '<option value="18x25.5">Académico B5 (18 x 25,5 cm)</option>' +
+        '</select>' +
+      '</label>' +
+      '<div style="display:flex;gap:10px;">' +
+        '<label class="campo" style="flex:1;">Páginas<input type="number" id="cot-paginas" value="100" oninput="calcularCotizacion()"></label>' +
+        '<label class="campo" style="flex:1;">Cantidad Libros<input type="number" id="cot-cantidad" value="100" oninput="calcularCotizacion()"></label>' +
+      '</div>' +
+      '<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">' +
+        '<label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;">' +
+          '<input type="checkbox" id="cot-bookcell" checked onchange="calcularCotizacion()"> Papel Bookcell 80g (+$' + COTIZADOR_FIJOS.extraBookcell + ' c/u)' +
+        '</label>' +
+        '<label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;">' +
+          '<input type="checkbox" id="cot-solapas" onchange="calcularCotizacion()"> Incluye Solapas (+$' + COTIZADOR_FIJOS.extraSolapas + ' c/u)' +
+        '</label>' +
+      '</div>' +
+    '</div>' +
+
+    '<div style="background:var(--glass);border:1px solid var(--borde);padding:20px;border-radius:10px;">' +
+      '<span style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--terracota);display:block;margin-bottom:14px;">2. Envíos y Costos Fijos</span>' +
+      '<div style="background:rgba(0,0,0,0.3);padding:10px 14px;border-radius:6px;border:1px solid var(--borde);margin-bottom:14px;">' +
+        '<span style="font-size:11px;color:var(--media);font-family:var(--mono);display:block;">Báscula y Logística Vía Cargo:</span>' +
+        '<div id="cot-peso-resultado" style="font-size:12px;color:var(--arena);line-height:1.5;">-</div>' +
+      '</div>' +
+      '<label class="campo">Costo Envío ($ Vía Cargo / Expreso)' +
+        '<input type="number" id="cot-envio" value="105000" oninput="calcularCotizacion()">' +
+      '</label>' +
+      '<div style="display:flex;gap:10px;">' +
+        '<label class="campo" style="flex:1;">ISBN ($)<input type="number" id="cot-isbn" value="' + COTIZADOR_FIJOS.isbn + '" oninput="calcularCotizacion()"></label>' +
+        '<label style="display:flex;align-items:center;gap:6px;font-size:12px;margin-top:20px;cursor:pointer;">' +
+          '<input type="checkbox" id="cot-cal" onchange="calcularCotizacion()"> CAL ($' + COTIZADOR_FIJOS.cal + ')' +
+        '</label>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+
+  // 4. HONORARIOS Y RESULTADO FINAL (CON CARTEL GIGANTE DE IMPRENTA)
+  html += '<div style="background:rgba(200,90,56,0.06);border:1px solid var(--borde-fuerte);border-radius:12px;padding:24px;margin-bottom:34px;">' +
+    '<span style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--terracota);display:block;margin-bottom:14px;">3. Definición de Precio y Ganancia</span>' +
+
+    // BLOQUE DESTACADO: EXACTO A PAGAR A LA IMPRENTA
+    '<div style="background:rgba(0,0,0,0.5);border:1px solid var(--terracota);border-radius:8px;padding:14px 18px;margin-bottom:18px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
+        '<div>' +
+          '<span style="font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--terracota);font-weight:700;letter-spacing:.08em;">🏷️ TOTAL A PAGAR A LA IMPRENTA:</span>' +
+          '<div id="r-imprenta-cuotas" style="font-family:var(--mono);font-size:12px;color:var(--media);margin-top:4px;">-</div>' +
+        '</div>' +
+        '<strong id="r-imprenta-destacado" style="font-size:1.6rem;color:var(--arena);font-family:var(--serif);">-</strong>' +
+      '</div>' +
+    '</div>' +
+
+    '<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;margin-bottom:20px;">' +
+      '<label class="campo" style="flex:1;min-width:200px;">Precio TOTAL a cobrarle al autor ($)' +
+        '<input type="number" id="cot-precio-total" value="1300000" style="font-size:1.25rem;color:var(--terracota);font-weight:700;" oninput="recalcularDesdeTotal()">' +
+      '</label>' +
+      '<label class="campo" style="flex:1;min-width:200px;">O definilo por tu Honorario Limpio ($)' +
+        '<input type="number" id="cot-honorario-input" oninput="recalcularDesdeHonorario()">' +
+      '</label>' +
+      '<div style="display:flex;gap:6px;margin-bottom:14px;">' +
+        '<button type="button" class="btn btn-chico" onclick="aplicarMargenPorc(45)">Fijar 45% margen</button>' +
+        '<button type="button" class="btn btn-chico" onclick="aplicarMargenPorc(50)">Fijar 50% margen</button>' +
+      '</div>' +
+    '</div>' +
+
+    // Tabla de Resultados
+    '<div style="background:rgba(0,0,0,0.4);border-radius:8px;padding:16px 20px;border:1px solid var(--borde);">' +
+      '<div class="linea"><span>Costo de Imprenta (con inflación acumulada)</span><span class="num" id="r-costo-imprenta">-</span></div>' +
+      '<div class="linea"><span>+ Costos Fijos (Envío + ISBN + CAL si aplica)</span><span class="num" id="r-costos-fijos">-</span></div>' +
+      '<div class="linea destacado"><strong style="color:var(--arena);">Piso de Costo Mínimo (Fabricación + Envíos + Legal)</strong><strong class="num" id="r-piso-costo" style="color:var(--arena);">-</strong></div>' +
+      '<div class="linea destacado"><strong style="color:var(--verde);">Tus Honorarios Limpios (Ganancia neta)</strong><strong class="num" id="r-ganancia-limpia" style="color:var(--verde);font-size:1.15rem;">-</strong></div>' +
+      '<div class="linea total"><span>Precio Total al Cliente</span><span class="num" id="r-total-cliente">-</span></div>' +
+      '<div class="linea" style="border:none;padding-top:4px;"><span style="font-size:12px;color:var(--media);">Costo unitario por libro para el autor</span><span class="num" id="r-unitario-cliente" style="font-size:12px;color:var(--media);">-</span></div>' +
+    '</div>' +
+  '</div>';
+
+  // 5. SIMULADOR DE ANTOLOGÍAS COLECTIVAS
+  html += '<div style="background:var(--glass);border:1px solid var(--terracota);border-radius:12px;padding:24px;">' +
+    '<div style="margin-bottom:16px;">' +
+      '<div class="eyebrow" style="margin-bottom:4px;">Simulador de Convocatorias</div>' +
+      '<h3 style="font-size:1.45rem;margin:0 0 6px 0;">Antologías Colectivas (Control de Riesgo)</h3>' +
+      '<p style="color:var(--media);font-size:12px;margin:0;">Calculá cuánto cobrarle a cada autor según el piso mínimo para no terminar pagando vos los libros.</p>' +
+    '</div>' +
+
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));gap:12px;margin-bottom:14px;">' +
+      '<label class="campo">Piso de Autores<input type="number" id="ant-autores" value="20" oninput="calcularAntologia()"></label>' +
+      '<label class="campo">Libros c/u para Autores<input type="number" id="ant-libros-cu" value="10" oninput="calcularAntologia()"></label>' +
+      '<label class="campo">Libros Editorial (Legales/Stock)<input type="number" id="ant-libros-edit" value="10" oninput="calcularAntologia()"></label>' +
+      '<label class="campo">Páginas c/u<input type="number" id="ant-pags-cu" value="6" oninput="calcularAntologia()"></label>' +
+      '<label class="campo">Págs Editorial (Prólogo, legales)<input type="number" id="ant-pags-edit" value="16" oninput="calcularAntologia()"></label>' +
+      '<label class="campo">Tu Ganancia Deseada ($)<input type="number" id="ant-ganancia-deseada" value="500000" oninput="calcularAntologia()"></label>' +
+    '</div>' +
+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;background:rgba(0,0,0,0.25);padding:14px;border-radius:8px;border:1px solid var(--borde);margin-bottom:16px;">' +
+      '<div>' +
+        '<span style="font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--terracota);display:block;margin-bottom:8px;">Formato Físico de la Antología</span>' +
+        '<label style="display:flex;align-items:center;gap:6px;font-size:12.5px;cursor:pointer;margin-bottom:6px;">' +
+          '<input type="checkbox" id="ant-bookcell" checked onchange="calcularAntologia()"> Papel Bookcell 80g (+$' + COTIZADOR_FIJOS.extraBookcell + ' c/u)' +
+        '</label>' +
+        '<label style="display:flex;align-items:center;gap:6px;font-size:12.5px;cursor:pointer;">' +
+          '<input type="checkbox" id="ant-solapas" onchange="calcularAntologia()"> Con Solapas para nombres/bios (+$' + COTIZADOR_FIJOS.extraSolapas + ' c/u)' +
+        '</label>' +
+      '</div>' +
+      '<div>' +
+        '<span style="font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--terracota);display:block;margin-bottom:6px;">Costos Fijos de la Antología</span>' +
+        '<div style="display:flex;gap:10px;">' +
+          '<label class="campo" style="flex:1;margin:0;">Envío total ($)<input type="number" id="ant-envio" value="170000" style="padding:6px 10px;" oninput="calcularAntologia()"></label>' +
+          '<label class="campo" style="flex:1;margin:0;">ISBN ($)<input type="number" id="ant-isbn" value="' + COTIZADOR_FIJOS.isbn + '" style="padding:6px 10px;" oninput="calcularAntologia()"></label>' +
+        '</div>' +
+        '<div id="ant-logistica-datos" style="font-family:var(--mono);font-size:11px;color:var(--media);margin-top:8px;line-height:1.5;">-</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div id="ant-resultado-box" style="margin-top:14px;"></div>' +
+  '</div>';
+
+  panel.innerHTML = html;
+  calcularCotizacion();
+  calcularAntologia();
+}
+
+function calcularPeso(formato, paginas, cantidad, solapas) {
+  var area = 0.148 * 0.21;
+  var pesoTapa = 0.035;
+  if (formato === '12.8x18') { area = 0.128 * 0.18; pesoTapa = 0.028; }
+  if (formato === '18x25.5') { area = 0.18 * 0.255; pesoTapa = 0.048; }
+  if (solapas) pesoTapa *= 1.35;
+
+  var pesoHojas = area * 80 * (paginas / 2) / 1000;
+  var pesoUnitarioKg = pesoHojas + pesoTapa;
+  var pesoTotalKg = (pesoUnitarioKg * cantidad) + 1.0;
+
+  return { unitarioGr: Math.round(pesoUnitarioKg * 1000), totalKg: Math.round(pesoTotalKg * 10) / 10 };
+}
+
+function estimarEnvioViaCargo(pesoKg) {
+  var p = ESCALA_VIACARGO;
+  if (pesoKg <= p[0][0]) return p[0][1];
+  if (pesoKg >= p[2][0]) {
+    var pend = (p[2][1] - p[1][1]) / (p[2][0] - p[1][0]);
+    return Math.round(p[2][1] + pend * (pesoKg - p[2][0]));
+  }
+  for (var i = 0; i < p.length - 1; i++) {
+    if (pesoKg >= p[i][0] && pesoKg <= p[i + 1][0]) {
+      var t = (pesoKg - p[i][0]) / (p[i + 1][0] - p[i][0]);
+      return Math.round(p[i][1] + t * (p[i + 1][1] - p[i][1]));
+    }
+  }
+  return 86000;
+}
+
+function calcularPrecioImprentaUnitario(tipo, formato, paginas, cantidad, bookcell, solapas) {
+  var tabla = TABLAS_IMPRENTA[tipo][formato] || TABLAS_IMPRENTA['byn']['14.8x21'];
+  var tiers = Object.keys(tabla).map(Number).sort(function(a,b){ return a - b; });
+  var t1 = tiers[0], t2 = tiers[tiers.length - 1];
+
+  var param = tabla[t1];
+  for (var i = 0; i < tiers.length - 1; i++) {
+    if (cantidad >= tiers[i] && cantidad <= tiers[i+1]) {
+      var ratio = (cantidad - tiers[i]) / (tiers[i+1] - tiers[i]);
+      param = {
+        intercepto: tabla[tiers[i]].intercepto + ratio * (tabla[tiers[i+1]].intercepto - tabla[tiers[i]].intercepto),
+        pendiente: tabla[tiers[i]].pendiente + ratio * (tabla[tiers[i+1]].pendiente - tabla[tiers[i]].pendiente)
+      };
+      break;
+    }
+  }
+  if (cantidad >= t2) param = tabla[t2];
+
+  var precioBase = param.intercepto + param.pendiente * paginas;
+  if (bookcell) precioBase += COTIZADOR_FIJOS.extraBookcell;
+  if (solapas) precioBase += COTIZADOR_FIJOS.extraSolapas;
+
+  return precioBase * COTIZADOR_FACTOR;
+}
+
+function calcularCotizacion() {
+  var tipo = document.getElementById('cot-tipo').value;
+  var formato = document.getElementById('cot-formato').value;
+  var paginas = parseFloat(document.getElementById('cot-paginas').value) || 0;
+  var cantidad = parseFloat(document.getElementById('cot-cantidad').value) || 1;
+  var bookcell = document.getElementById('cot-bookcell').checked;
+  var solapas = document.getElementById('cot-solapas').checked;
+
+  var peso = calcularPeso(formato, paginas, cantidad, solapas);
+  var precioUnitarioImp = calcularPrecioImprentaUnitario(tipo, formato, paginas, cantidad, bookcell, solapas);
+  var costoImprentaTotal = precioUnitarioImp * cantidad;
+
+  // Valor Declarado sugerido Vía Cargo
+  var valorDeclaradoSug = Math.max(100000, Math.round(costoImprentaTotal / 10000) * 10000);
+  document.getElementById('cot-peso-resultado').innerHTML = peso.unitarioGr + ' g/libro · Caja completa: ~' + peso.totalKg + ' kg (25x35x28 cm)<br><span style="color:var(--terracota);font-weight:600;">🛡️ Valor Declarado sugerido Vía Cargo: $' + valorDeclaradoSug.toLocaleString('es-AR') + '</span>';
+
+  // CARTEL DESTACADO DE PAGO A LA IMPRENTA
+  document.getElementById('r-imprenta-destacado').textContent = '$' + Math.round(costoImprentaTotal).toLocaleString('es-AR');
+  document.getElementById('r-imprenta-cuotas').textContent = '$' + Math.round(precioUnitarioImp).toLocaleString('es-AR') + ' c/u · Seña 50%: $' + Math.round(costoImprentaTotal / 2).toLocaleString('es-AR') + ' · Saldo 50%: $' + Math.round(costoImprentaTotal / 2).toLocaleString('es-AR');
+
+  var envio = parseFloat(document.getElementById('cot-envio').value) || 0;
+  var isbn = parseFloat(document.getElementById('cot-isbn').value) || 0;
+  var cal = document.getElementById('cot-cal').checked ? COTIZADOR_FIJOS.cal : 0;
+  var costosFijos = envio + isbn + cal;
+  var pisoCosto = costoImprentaTotal + costosFijos;
+
+  var total = parseFloat(document.getElementById('cot-precio-total').value) || 0;
+  var honorario = total - pisoCosto;
+
+  document.getElementById('cot-honorario-input').value = Math.round(honorario);
+
+  document.getElementById('r-costo-imprenta').textContent = '$' + Math.round(costoImprentaTotal).toLocaleString('es-AR');
+  document.getElementById('r-costos-fijos').textContent = '$' + Math.round(costosFijos).toLocaleString('es-AR');
+  document.getElementById('r-piso-costo').textContent = '$' + Math.round(pisoCosto).toLocaleString('es-AR');
+  document.getElementById('r-ganancia-limpia').textContent = '$' + Math.round(honorario).toLocaleString('es-AR') + ' (' + Math.round((honorario/total)*100) + '% margen)';
+  document.getElementById('r-total-cliente').textContent = '$' + Math.round(total).toLocaleString('es-AR');
+  document.getElementById('r-unitario-cliente').textContent = '$' + Math.round(total / cantidad).toLocaleString('es-AR') + ' c/u';
+}
+
+function recalcularDesdeTotal() {
+  calcularCotizacion();
+}
+
+function recalcularDesdeHonorario() {
+  var honorario = parseFloat(document.getElementById('cot-honorario-input').value) || 0;
+  var pisoCosto = (parseFloat(document.getElementById('r-piso-costo').textContent.replace(/\D/g,'')) || 0);
+  document.getElementById('cot-precio-total').value = Math.round(pisoCosto + honorario);
+  calcularCotizacion();
+}
+
+function aplicarMargenPorc(porcentaje) {
+  var pisoCosto = (parseFloat(document.getElementById('r-piso-costo').textContent.replace(/\D/g,'')) || 0);
+  var total = pisoCosto / (1 - (porcentaje / 100));
+  document.getElementById('cot-precio-total').value = Math.round(total);
+  calcularCotizacion();
+}
+
+function cargarPaqueteEstandar(cant, pags, bookcell, solapas, precioTotal) {
+  document.getElementById('cot-tipo').value = 'byn';
+  document.getElementById('cot-formato').value = '14.8x21';
+  document.getElementById('cot-paginas').value = pags;
+  document.getElementById('cot-cantidad').value = cant;
+  document.getElementById('cot-bookcell').checked = bookcell;
+  document.getElementById('cot-solapas').checked = solapas;
+
+  var peso = calcularPeso('14.8x21', pags, cant, solapas);
+  document.getElementById('cot-envio').value = estimarEnvioViaCargo(peso.totalKg);
+  document.getElementById('cot-precio-total').value = precioTotal;
+  calcularCotizacion();
+  mostrarToast('Paquete cargado');
+}
+
+function limpiarCamposCotizador() {
+  document.getElementById('cot-paginas').value = 100;
+  document.getElementById('cot-cantidad').value = 50;
+  document.getElementById('cot-bookcell').checked = false;
+  document.getElementById('cot-solapas').checked = false;
+  document.getElementById('cot-cal').checked = false;
+  document.getElementById('cot-envio').value = 0;
+  document.getElementById('cot-precio-total').value = 0;
+  document.getElementById('cot-honorario-input').value = 0;
+  calcularCotizacion();
+  mostrarToast('Campos vaciados para nueva cotización');
+}
+
+function aplicarAumentoInflacion() {
+  var aumento = parseFloat(document.getElementById('cot-inflacion-input').value);
+  if (!aumento || isNaN(aumento)) { alert('Ingresá el porcentaje de aumento (ej: 10)'); return; }
+
+  COTIZADOR_FACTOR = COTIZADOR_FACTOR * (1 + (aumento / 100));
+  document.getElementById('cot-inflacion-input').value = '';
+
+  google.script.run
+    .withSuccessHandler(function() {
+      mostrarToast('Aumento acumulado guardado');
+      renderizarInterfazCotizador();
+    })
+    .withFailureHandler(manejarErrorSesion)
+    .adminGuardarConfigCotizador(TOKEN, COTIZADOR_FACTOR, COTIZADOR_FIJOS);
+}
+
+function resetearInflacion() {
+  if (!confirm('¿Restablecer tarifas al valor base de septiembre 2026?')) return;
+  COTIZADOR_FACTOR = 1.0;
+  google.script.run
+    .withSuccessHandler(function() {
+      mostrarToast('Tarifas restablecidas');
+      renderizarInterfazCotizador();
+    })
+    .adminGuardarConfigCotizador(TOKEN, 1.0, COTIZADOR_FIJOS);
+}
+
+function calcularAntologia() {
+  var autores = parseInt(document.getElementById('ant-autores').value) || 1;
+  var librosCu = parseInt(document.getElementById('ant-libros-cu').value) || 1;
+  var librosEdit = parseInt(document.getElementById('ant-libros-edit').value) || 0;
+  var pagsCu = parseInt(document.getElementById('ant-pags-cu').value) || 1;
+  var pagsEdit = parseInt(document.getElementById('ant-pags-edit').value) || 0;
+  var gananciaDeseada = parseFloat(document.getElementById('ant-ganancia-deseada').value) || 0;
+
+  var usaBookcell = document.getElementById('ant-bookcell') ? document.getElementById('ant-bookcell').checked : true;
+  var usaSolapas = document.getElementById('ant-solapas') ? document.getElementById('ant-solapas').checked : false;
+
+  var totalLibros = (autores * librosCu) + librosEdit;
+  var totalPaginas = (autores * pagsCu) + pagsEdit;
+  if (totalPaginas % 4 !== 0) totalPaginas += (4 - (totalPaginas % 4));
+
+  // Logística física real para Vía Cargo
+  var peso = calcularPeso('14.8x21', totalPaginas, totalLibros, usaSolapas);
+  var bultos = Math.max(1, Math.ceil(peso.totalKg / 22));
+  var pesoPorCaja = Math.round((peso.totalKg / bultos) * 10) / 10;
+
+  var costoEnvio = parseFloat(document.getElementById('ant-envio').value);
+  if (isNaN(costoEnvio) || costoEnvio <= 0) {
+    costoEnvio = bultos * 86000;
+  }
+
+  var isbnAntologia = parseFloat(document.getElementById('ant-isbn') ? document.getElementById('ant-isbn').value : COTIZADOR_FIJOS.isbn) || 0;
+
+  var costoUnitarioImp = calcularPrecioImprentaUnitario('byn', '14.8x21', totalPaginas, totalLibros, usaBookcell, usaSolapas);
+  var costoImprentaTotal = costoUnitarioImp * totalLibros;
+
+  // Valor Declarado sugerido Vía Cargo (Antología)
+  var valorDeclaradoTotal = Math.max(100000, Math.round(costoImprentaTotal / 10000) * 10000);
+  var valorDeclaradoBulto = Math.round((valorDeclaradoTotal / bultos) / 10000) * 10000;
+
+  var logisticaEl = document.getElementById('ant-logistica-datos');
+  if (logisticaEl) {
+    logisticaEl.innerHTML = '📦 <strong>' + bultos + ' bultos</strong> de 25x35x28 cm (~' + pesoPorCaja + ' kg c/u · Total: ' + peso.totalKg + ' kg)<br><span style="color:var(--terracota);font-weight:600;">🛡️ Valor Declarado Vía Cargo sugerido: $' + valorDeclaradoTotal.toLocaleString('es-AR') + ' total ($' + valorDeclaradoBulto.toLocaleString('es-AR') + ' por bulto)</span>';
+  }
+
+  var costosFijos = costoEnvio + isbnAntologia;
+  var costoTotalProyecto = costoImprentaTotal + costosFijos + gananciaDeseada;
+
+  var precioPorAutor = Math.round(costoTotalProyecto / autores);
+
+  var html = '' +
+    // CARTEL DESTACADO: EXACTO A PAGAR A LA IMPRENTA (ANTOLOGÍA)
+    '<div style="background:rgba(0,0,0,0.45);border:1px solid var(--terracota);border-radius:8px;padding:12px 16px;margin-bottom:14px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
+        '<div>' +
+          '<span style="font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--terracota);font-weight:700;">🏷️ A PAGAR A LA IMPRENTA (TOTAL TIRADA ' + totalLibros + ' LIBROS):</span>' +
+          '<div style="font-family:var(--mono);font-size:11px;color:var(--media);margin-top:2px;">' +
+            '$' + Math.round(costoUnitarioImp).toLocaleString('es-AR') + ' c/u · Seña 50%: $' + Math.round(costoImprentaTotal / 2).toLocaleString('es-AR') + ' · Saldo 50%: $' + Math.round(costoImprentaTotal / 2).toLocaleString('es-AR') +
+          '</div>' +
+        '</div>' +
+        '<strong style="font-size:1.45rem;color:var(--arena);font-family:var(--serif);">' + '$' + Math.round(costoImprentaTotal).toLocaleString('es-AR') + '</strong>' +
+      '</div>' +
+    '</div>' +
+
+    // CARTEL SUGERIDO POR AUTOR
+    '<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:16px;border:1px solid var(--borde);margin-bottom:16px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">' +
+        '<div>' +
+          '<span style="font-size:11px;font-family:var(--mono);color:var(--media);text-transform:uppercase;">Libro resultante: ' + totalPaginas + ' páginas · Tirada: ' + totalLibros + ' libros (incluye tus ' + librosEdit + ' libros de editorial)</span>' +
+          '<h4 style="font-size:1.4rem;color:var(--arena);margin:2px 0;">Precio sugerido por Autor: <span style="color:var(--terracota);">' + '$' + precioPorAutor.toLocaleString('es-AR') + '</span></h4>' +
+          '<span style="font-size:12px;color:var(--media);line-height:1.6;display:block;margin-top:4px;">(Desglose del proyecto: Imprenta: $' + Math.round(costoImprentaTotal).toLocaleString('es-AR') + ' · Envío: $' + Math.round(costoEnvio).toLocaleString('es-AR') + ' · ISBN: $' + Math.round(isbnAntologia).toLocaleString('es-AR') + ' · Tu ganancia neta: $' + Math.round(gananciaDeseada).toLocaleString('es-AR') + ')</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  // Matriz de Sensibilidad (Semáforo de Riesgo)
+  html += '<span style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--media);display:block;margin-bottom:8px;">Matriz de Riesgo: ¿Qué pasa si se anotan menos autores cobrando $' + precioPorAutor.toLocaleString('es-AR') + '?</span>' +
+    '<div style="overflow-x:auto;">' +
+    '<table style="width:100%;font-size:12px;border-collapse:collapse;font-family:var(--mono);text-align:left;">' +
+      '<thead><tr style="border-bottom:1px solid var(--borde);color:var(--media);">' +
+        '<th style="padding:6px;">Autores</th><th>Tirada</th><th>Págs</th><th>Ganancia Real</th><th>Estado</th>' +
+      '</tr></thead><tbody>';
+
+  [25, 20, 15, 10, 6].forEach(function(n) {
+    var totL = (n * librosCu) + librosEdit;
+    var totP = (n * pagsCu) + pagsEdit;
+    if (totP % 4 !== 0) totP += (4 - (totP % 4));
+    var pKg = calcularPeso('14.8x21', totP, totL, usaSolapas);
+    var bultosTier = Math.max(1, Math.ceil(pKg.totalKg / 22));
+    var cImp = calcularPrecioImprentaUnitario('byn', '14.8x21', totP, totL, usaBookcell, usaSolapas) * totL;
+    var cFij = (bultosTier * 85000) + isbnAntologia;
+    var ingreso = n * precioPorAutor;
+    var gananciaReal = Math.round(ingreso - (cImp + cFij));
+
+    var estado = '<span style="color:var(--verde);">🟢 Excelente</span>';
+    if (gananciaReal < gananciaDeseada * 0.7 && gananciaReal > 0) estado = '<span style="color:#d4af37;">🟡 Ajustado</span>';
+    if (gananciaReal <= 0) estado = '<span style="color:var(--terracota);font-weight:700;">🔴 PÉRDIDA NETA</span>';
+
+    html += '<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">' +
+      '<td style="padding:6px;font-weight:700;">' + n + ' autores</td>' +
+      '<td>' + totL + ' u</td>' +
+      '<td>' + totP + ' p</td>' +
+      '<td style="color:' + (gananciaReal > 0 ? 'var(--verde)' : 'var(--terracota)') + ';">$' + gananciaReal.toLocaleString('es-AR') + '</td>' +
+      '<td>' + estado + '</td>' +
+    '</tr>';
+  });
+
+  html += '</tbody></table></div>';
+  document.getElementById('ant-resultado-box').innerHTML = html;
+}
+</script>
+</body>
+</html>
