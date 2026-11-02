@@ -19,14 +19,14 @@
 <meta property="og:locale" content="es_AR">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Lorem Ipsum Ediciones">
-<meta property="og:title" content="Lorem Ipsum Ediciones — Donde lo que no decía nada, empieza a decir algo">
-<meta property="og:description" content="Cruce entre diseño, edición y un enfoque radical en el poder de la palabra. Conocé nuestro catálogo, servicios para autores y talleres.">
-<meta property="og:image" id="og-image-dinamica" content="https://loremipsumediciones-glitch.github.io/web/portada-og.jpg">
+<meta property="og:title" content="Lorem Ipsum Ediciones — Una editorial pensada para el escritor independiente.">
+<meta property="og:description" content="Cruce entre diseño, edición y un enfoque en el poder de la palabra.">
+<meta property="og:image" id="og-image-dinamica" content="https://loremipsumediciones-glitch.github.io/web/logo.png">
 
 <!-- Twitter / X Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Lorem Ipsum Ediciones — Editorial Independiente">
-<meta name="twitter:description" content="Edición, diseño, catálogo de libros y acompañamiento integral para autores.">
+<meta name="twitter:title" content="Lorem Ipsum Ediciones — Una editorial pensada para el escritor independiente.">
+<meta name="twitter:description" content="Cruce entre diseño, edición y un enfoque en el poder de la palabra.">
 
 <!-- Datos Estructurados Schema.org (Le dice a Google que sos una Editorial Oficial) -->
 <script type="application/ld+json" id="schema-editorial">
@@ -1859,9 +1859,16 @@ function renderizarEbooksDisponibles(libros) {
   }).join('');
 }
 
-function abrirModalLibroPorId(id) {
-  var lib = (DATOS.libros || []).find(function(l) { return l.id === id; });
-  if (lib) abrirModalLibro(lib);
+function abrirModalLibroPorId(idOTitulo) {
+  if (!idOTitulo) return;
+  var buscado = String(idOTitulo).trim().toLowerCase();
+  var lib = (DATOS.libros || []).find(function(l) {
+    return String(l.id || '').trim().toLowerCase() === buscado ||
+           String(l.titulo || '').trim().toLowerCase() === buscado;
+  });
+  if (lib) {
+    abrirModalLibro(lib);
+  }
 }
 
 function renderizarCarruselLanzamientos(libros) {
@@ -2495,14 +2502,14 @@ function abrirModalLibro(lib) {
     '<a href="' + linkCta + '" target="_blank" class="btn' + (esVenta ? '' : ' btn-terracota') + '" style="width:100%;justify-content:center;">' +
       (esVenta ? 'Consultar por WhatsApp ' : 'Consultar / Preventa ') + ic('flecha', 'ic-sm') +
     '</a>' +
-    '<button onclick="compartirLibroWhatsApp(\'' + lib.id + '\', this)" class="btn" style="width:100%;justify-content:center;margin-top:8px;">🔗 Copiar link del libro (con portada para WhatsApp)</button>';
+    '<button onclick="compartirLibroWhatsApp(\'' + escapeHtml(lib.id || lib.titulo).replace(/'/g, "\\'") + '\', this)" class="btn" style="width:100%;justify-content:center;margin-top:8px;">🔗 Copiar link de este libro</button>';
 
   document.getElementById('modal').classList.add('activo');
 }
 
-function compartirLibroWhatsApp(libroId, btn) {
-  var linkSeguro = 'https://loremipsumediciones-glitch.github.io/web/?libro=' + encodeURIComponent(libroId);
-  navigator.clipboard.writeText(linkSeguro).then(function() {
+function compartirLibroWhatsApp(identificadorLibro, btn) {
+  var linkConPortada = URL_BACKEND_EXEC + '?libro=' + encodeURIComponent(identificadorLibro);
+  navigator.clipboard.writeText(linkConPortada).then(function() {
     var txt = btn.innerHTML;
     btn.innerHTML = '¡Link del libro copiado! ✓';
     setTimeout(function() { btn.innerHTML = txt; }, 2000);
