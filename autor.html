@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Autor — Lorem Ipsum Ediciones</title>
+<meta name="description" content="Página oficial de autor en Lorem Ipsum Ediciones.">
 <meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='330 285 263 285' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='330' y='285' width='263' height='285' rx='45' fill='%23121316'/%3E%3Cg fill='none' stroke='%23A9563F' stroke-width='18' stroke-linejoin='miter' stroke-linecap='butt'%3E%3Crect x='400' y='314' width='122' height='93'/%3E%3Cpath d='M431 380 V348 H491 V380'/%3E%3Cpath d='M461 372 V541'/%3E%3Cpath d='M400 514 V541 H522 V514'/%3E%3Cpath d='M386 359 H359 V490 H429 V439 H394 V466'/%3E%3Cpath d='M536 359 H563 V490 H493 V439 H528 V466'/%3E%3C/g%3E%3C/svg%3E">
 
 <script>
 const URL_BACKEND_EXEC = "https://script.google.com/macros/s/AKfycbwaErOqrlFddu2Dnq3ZydRX6wLaMd2L2wwCDGpeD1rMV-GJOh_jKWgy7Tjux8-psdoP/exec";
@@ -621,7 +623,8 @@ function renderizarPaginaAutor(res) {
     document.documentElement.style.setProperty('--color-acento-hover', a.color_acento);
   }
 
-  // 2. Textos principales
+  // 2. Textos principales y SEO dinámico con el nombre del autor
+  document.title = a.nombre + ' — Obras, Biografía y Libros | Lorem Ipsum Ediciones';
   document.getElementById('autor-nombre').textContent = a.nombre;
   document.getElementById('nombre-bio-pie').textContent = a.nombre;
   document.getElementById('autor-foto').src = a.foto_url || 'https://via.placeholder.com/300';
