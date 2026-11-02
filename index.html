@@ -1,23 +1,58 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-AR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lorem Ipsum Ediciones</title>
-<meta name="description" content="Editorial independiente dedicada a la creación, edición y preservación de obras literarias.">
-<meta name="robots" content="index, follow">
+<title>Lorem Ipsum Ediciones — Editorial Independiente & Publicación de Libros</title>
+
+<!-- SEO Principal para Google -->
+<meta name="description" content="Editorial independiente en Argentina dedicada a la edición, diseño, publicación de libros físicos y ebooks, talleres literarios y acompañamiento integral para autores.">
+<meta name="keywords" content="Lorem Ipsum Ediciones, editorial independiente, publicar un libro, servicios editoriales, edición de libros, corrección literaria, maquetación, ebooks, talleres de escritura, Argentina">
+<meta name="author" content="Lorem Ipsum Ediciones">
+<meta name="robots" content="index, follow, max-image-preview:large"
+<meta name="theme-color" content="#121316">
+
+<!-- Favicon Oficial (Sello Geométrico Terracota #A9563F) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='330 285 263 285' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='330' y='285' width='263' height='285' rx='45' fill='%23121316'/%3E%3Cg fill='none' stroke='%23A9563F' stroke-width='18' stroke-linejoin='miter' stroke-linecap='butt'%3E%3Crect x='400' y='314' width='122' height='93'/%3E%3Cpath d='M431 380 V348 H491 V380'/%3E%3Cpath d='M461 372 V541'/%3E%3Cpath d='M400 514 V541 H522 V514'/%3E%3Cpath d='M386 359 H359 V490 H429 V439 H394 V466'/%3E%3Cpath d='M536 359 H563 V490 H493 V439 H528 V466'/%3E%3C/g%3E%3C/svg%3E">
+
+<!-- Open Graph / WhatsApp / Instagram / Facebook -->
+<meta property="og:locale" content="es_AR">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lorem Ipsum Ediciones">
+<meta property="og:title" content="Lorem Ipsum Ediciones — Donde lo que no decía nada, empieza a decir algo">
+<meta property="og:description" content="Cruce entre diseño, edición y un enfoque radical en el poder de la palabra. Conocé nuestro catálogo, servicios para autores y talleres.">
+<meta property="og:image" id="og-image-dinamica" content="https://loremipsumediciones-glitch.github.io/web/portada-og.jpg">
+
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lorem Ipsum Ediciones — Editorial Independiente">
+<meta name="twitter:description" content="Edición, diseño, catálogo de libros y acompañamiento integral para autores.">
+
+<!-- Datos Estructurados Schema.org (Le dice a Google que sos una Editorial Oficial) -->
+<script type="application/ld+json" id="schema-editorial">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Lorem Ipsum Ediciones",
+  "alternateName": "Lorem Ipsum Editorial",
+  "description": "Proyecto editorial independiente dedicado a la creación, edición y preservación de obras literarias con identidad visual propia.",
+  "url": "https://loremipsumediciones-glitch.github.io/web/"
+}
+</script>
 
 <script>
 // CONEXIÓN DIRECTA CON TU BACKEND APPS SCRIPT (SIN BLOQUEO MULTI-CUENTA)
 const URL_BACKEND_EXEC = "https://script.google.com/macros/s/AKfycbwaErOqrlFddu2Dnq3ZydRX6wLaMd2L2wwCDGpeD1rMV-GJOh_jKWgy7Tjux8-psdoP/exec";
 
 (function() {
-  var p = new URLSearchParams(window.location.search);
-  var path = window.location.pathname;
-  if (p.get('admin') && path.indexOf('admin.html') === -1) {
-    window.location.replace('admin.html');
-  } else if (p.get('autor') && path.indexOf('autor.html') === -1) {
-    window.location.replace('autor.html?autor=' + encodeURIComponent(p.get('autor')));
+  if (window.location.hostname.indexOf('github.io') !== -1) {
+    var p = new URLSearchParams(window.location.search);
+    var path = window.location.pathname;
+    if (p.get('admin') && path.indexOf('admin.html') === -1) {
+      window.location.replace('admin.html');
+    } else if (p.get('autor') && path.indexOf('autor.html') === -1) {
+      window.location.replace('autor.html?autor=' + encodeURIComponent(p.get('autor')));
+    }
   }
 })();
 
@@ -65,6 +100,7 @@ if (typeof google === 'undefined' || !google.script) {
   --tinta-media: #9E9C97;
   --tinta-tenue: #5E5D59;
   --terracota: #C85A38;
+  --terracota-sello: #A9563F;
   --terracota-suave: rgba(200, 90, 56, 0.15);
   --terracota-hover: #b34a29;
   --serif: 'Cormorant Garamond', Georgia, serif;
@@ -129,9 +165,9 @@ a { color: inherit; text-decoration: none; }
   top: 60px;
   right: -60px;
   width: 480px;
-  height: 480px;
-  stroke: var(--terracota);
-  opacity: 0.04;
+  height: auto;
+  color: var(--terracota-sello);
+  opacity: 0.045;
   pointer-events: none;
   z-index: 1;
 }
@@ -504,7 +540,7 @@ a { color: inherit; text-decoration: none; }
 .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
 .card-item { padding: 30px 26px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
 
-/* Carrusel Swipe Horizontal en el Home (Evita el choclo vertical) */
+/* Carrusel Swipe Horizontal en el Home */
 .home-swipe-track {
   display: flex;
   gap: 20px;
@@ -647,7 +683,7 @@ a { color: inherit; text-decoration: none; }
   .footer-inner { grid-template-columns: 1fr; gap: 30px; text-align: center; }
 }
 .footer-col-brand { display: flex; flex-direction: column; gap: 14px; }
-.footer-sello-icon { width: 44px; height: 44px; stroke: var(--terracota); fill: none; }
+.footer-sello-icon { width: 44px; height: auto; color: var(--terracota-sello); }
 .footer-links-list { list-style: none; display: flex; flex-direction: column; gap: 8px; font-family: var(--mono); font-size: 11.5px; }
 .footer-links-list a:hover { color: var(--terracota); }
 
@@ -703,16 +739,25 @@ a { color: inherit; text-decoration: none; }
 <body>
 
 <!-- SELLO GEOMÉTRICO OFICIAL LOREM IPSUM (MARCA DE AGUA DISCRETA) -->
-<svg class="sello-watermark-bg" viewBox="0 0 150 150" fill="none" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter">
-  <path d="M 35 15 H 115 V 75 H 35 V 15 Z" />
-  <path d="M 55 45 V 35 H 95 V 45" />
-  <path d="M 75 55 V 135" />
-  <path d="M 45 125 V 135 H 105 V 125" />
-  <path d="M 35 35 H 15 V 115 H 55 V 95 H 35 V 85" />
-  <path d="M 115 35 H 135 V 115 H 95 V 95 H 115 V 85" />
+<svg class="sello-watermark-bg" viewBox="345 300 233 255" xmlns="http://www.w3.org/2000/svg"
+     role="img" aria-label="Sello geométrico Lorem Ipsum Ediciones">
+  <g fill="none" stroke="currentColor" stroke-width="16"
+     stroke-linejoin="miter" stroke-linecap="butt">
+    <!-- Marco superior -->
+    <rect x="400" y="314" width="122" height="93"/>
+    <!-- Detalle interior en "T" invertida -->
+    <path d="M431 380 V348 H491 V380"/>
+    <!-- Tallo central + base -->
+    <path d="M461 372 V541"/>
+    <path d="M400 514 V541 H522 V514"/>
+    <!-- Espiral izquierda -->
+    <path d="M386 359 H359 V490 H429 V439 H394 V466"/>
+    <!-- Espiral derecha (espejo) -->
+    <path d="M536 359 H563 V490 H493 V439 H528 V466"/>
+  </g>
 </svg>
 
-<!-- NAVBAR PRINCIPAL (SPA) -->
+<!-- NAVBAR PRINCIPAL (SPA CON URLS LIMPIAS SIN #) -->
 <div class="header-sticky-wrap">
   <header class="site-header">
     <div class="brand" onclick="irAPagina('inicio')">
@@ -723,14 +768,14 @@ a { color: inherit; text-decoration: none; }
     <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu" id="nav-toggle-btn">Menú</button>
 
     <ul class="nav-menu" id="nav-menu">
-      <li><a href="#inicio" onclick="irAPagina('inicio')" class="nav-link activo" id="link-inicio">Inicio</a></li>
-      <li><a href="#manifiesto" onclick="irAPagina('manifiesto')" class="nav-link" id="link-manifiesto">Manifiesto</a></li>
-      <li><a href="#agenda" onclick="irAPagina('agenda')" class="nav-link" id="link-agenda">Agenda</a></li>
-      <li><a href="#talleres" onclick="irAPagina('talleres')" class="nav-link" id="link-talleres">Talleres</a></li>
-      <li><a href="#servicios" onclick="irAPagina('servicios')" class="nav-link" id="link-servicios">Servicios</a></li>
-      <li><a href="#archivo" onclick="irAPagina('archivo')" class="nav-link" id="link-archivo">Bóveda</a></li>
-      <li><a href="#faq" onclick="irAPagina('faq')" class="nav-link" id="link-faq">Preguntas</a></li>
-      <li><a href="#contacto" onclick="irAContacto()" class="nav-link" id="link-contacto">Contacto</a></li>
+      <li><a href="./" onclick="event.preventDefault(); irAPagina('inicio')" class="nav-link activo" id="link-inicio">Inicio</a></li>
+      <li><a href="manifiesto" onclick="event.preventDefault(); irAPagina('manifiesto')" class="nav-link" id="link-manifiesto">Manifiesto</a></li>
+      <li><a href="agenda" onclick="event.preventDefault(); irAPagina('agenda')" class="nav-link" id="link-agenda">Agenda</a></li>
+      <li><a href="talleres" onclick="event.preventDefault(); irAPagina('talleres')" class="nav-link" id="link-talleres">Talleres</a></li>
+      <li><a href="servicios" onclick="event.preventDefault(); irAPagina('servicios')" class="nav-link" id="link-servicios">Servicios</a></li>
+      <li><a href="archivo" onclick="event.preventDefault(); irAPagina('archivo')" class="nav-link" id="link-archivo">Bóveda</a></li>
+      <li><a href="faq" onclick="event.preventDefault(); irAPagina('faq')" class="nav-link" id="link-faq">Preguntas</a></li>
+      <li><a href="contacto" onclick="event.preventDefault(); irAContacto()" class="nav-link" id="link-contacto">Contacto</a></li>
     </ul>
   </header>
 </div>
@@ -765,8 +810,8 @@ a { color: inherit; text-decoration: none; }
           <h1 id="hero-hook" class="hero-hook">Donde lo que no decía nada, <em>empieza a decir algo.</em><span class="cursor-blink"></span></h1>
           <p id="hero-bajada" class="hero-bajada"></p>
           <div style="display:flex;gap:14px;flex-wrap:wrap;">
-            <a href="#servicios" onclick="irAPagina('servicios')" class="btn btn-terracota" id="btn-hero-servicios"></a>
-            <a href="#contacto" onclick="irAContacto()" class="btn" id="btn-hero-contacto"></a>
+            <a href="servicios" onclick="event.preventDefault(); irAPagina('servicios')" class="btn btn-terracota" id="btn-hero-servicios"></a>
+            <a href="contacto" onclick="event.preventDefault(); irAContacto()" class="btn" id="btn-hero-contacto"></a>
           </div>
         </div>
 
@@ -1102,7 +1147,7 @@ a { color: inherit; text-decoration: none; }
           <span style="font-family:var(--mono);font-size:11.5px;color:var(--terracota);letter-spacing:.1em;">● ACCESO AUTORIZADO A LA COMUNIDAD</span>
           <button class="btn" onclick="cerrarSesionBoveda()" style="font-size:10px;padding:6px 12px;">Cerrar sesión</button>
         </div>
-              <div id="archivo-cards"></div>
+        <div id="archivo-cards"></div>
       </div>
     </div>
   </section>
@@ -1222,13 +1267,17 @@ a { color: inherit; text-decoration: none; }
   <div class="footer-inner">
     <div class="footer-col-brand">
       <div style="display:flex;align-items:center;gap:12px;">
-        <svg class="footer-sello-icon" viewBox="0 0 150 150" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter">
-          <path d="M 35 15 H 115 V 75 H 35 V 15 Z" />
-          <path d="M 55 45 V 35 H 95 V 45" />
-          <path d="M 75 55 V 135" />
-          <path d="M 45 125 V 135 H 105 V 125" />
-          <path d="M 35 35 H 15 V 115 H 55 V 95 H 35 V 85" />
-          <path d="M 115 35 H 135 V 115 H 95 V 95 H 115 V 85" />
+        <svg class="footer-sello-icon" viewBox="345 300 233 255" xmlns="http://www.w3.org/2000/svg"
+             role="img" aria-label="Sello geométrico Lorem Ipsum Ediciones">
+          <g fill="none" stroke="currentColor" stroke-width="16"
+             stroke-linejoin="miter" stroke-linecap="butt">
+            <rect x="400" y="314" width="122" height="93"/>
+            <path d="M431 380 V348 H491 V380"/>
+            <path d="M461 372 V541"/>
+            <path d="M400 514 V541 H522 V514"/>
+            <path d="M386 359 H359 V490 H429 V439 H394 V466"/>
+            <path d="M536 359 H563 V490 H493 V439 H528 V466"/>
+          </g>
         </svg>
         <span style="font-family:var(--serif);font-size:1.4rem;color:var(--tinta-arena);">Lorem Ipsum Editorial</span>
       </div>
@@ -1240,12 +1289,12 @@ a { color: inherit; text-decoration: none; }
     <div>
       <div class="eyebrow" style="margin-bottom:14px;">Navegación</div>
       <ul class="footer-links-list">
-        <li><a href="#inicio" onclick="irAPagina('inicio')">Inicio & Catálogo</a></li>
-        <li><a href="#manifiesto" onclick="irAPagina('manifiesto')">Manifiesto</a></li>
-        <li><a href="#agenda" onclick="irAPagina('agenda')">Agenda de Encuentros</a></li>
-        <li><a href="#talleres" onclick="irAPagina('talleres')">Talleres & Formación</a></li>
-        <li><a href="#servicios" onclick="irAPagina('servicios')">Servicios para Autores</a></li>
-        <li><a href="#archivo" onclick="irAPagina('archivo')">Bóveda Privada</a></li>
+        <li><a href="./" onclick="event.preventDefault(); irAPagina('inicio')">Inicio & Catálogo</a></li>
+        <li><a href="manifiesto" onclick="event.preventDefault(); irAPagina('manifiesto')">Manifiesto</a></li>
+        <li><a href="agenda" onclick="event.preventDefault(); irAPagina('agenda')">Agenda de Encuentros</a></li>
+        <li><a href="talleres" onclick="event.preventDefault(); irAPagina('talleres')">Talleres & Formación</a></li>
+        <li><a href="servicios" onclick="event.preventDefault(); irAPagina('servicios')">Servicios para Autores</a></li>
+        <li><a href="archivo" onclick="event.preventDefault(); irAPagina('archivo')">Bóveda Privada</a></li>
       </ul>
     </div>
 
@@ -1281,7 +1330,7 @@ a { color: inherit; text-decoration: none; }
 <script>
 // BANNER DE AUTORIDAD Y SEGURIDAD EDITORIAL EN CONSOLA (F12)
 console.log(
-  "%c LOREM IPSUM EDICIONES %c Plataforma Digital Protegida\n%cArquitectura Serverless Headless v2.4 · Todos los derechos reservados. Acceso no autorizado monitoreado.",
+  "%c LOREM IPSUM EDICIONES %c Plataforma Digital Protegida\n%cArquitectura Serverless Headless v2.5 · Todos los derechos reservados. Acceso no autorizado monitoreado.",
   "background:#C85A38;color:#ffffff;padding:6px 10px;font-family:monospace;font-size:12px;font-weight:bold;border-radius:4px 0 0 4px;",
   "background:#121316;color:#F4EFE6;padding:6px 10px;font-family:monospace;font-size:12px;border:1px solid #C85A38;border-radius:0 4px 4px 0;",
   "color:#9E9C97;font-family:monospace;font-size:10px;padding:6px 0;display:block;"
@@ -1316,6 +1365,10 @@ function iniciarApp() {
   document.getElementById('btn-ws').innerHTML = ic('mensaje', 'ic-sm') + ' Escribir por WhatsApp';
   document.getElementById('btn-mail').innerHTML = 'Enviar Correo';
 
+  window.addEventListener('popstate', function() {
+    mostrarPagina(obtenerRutaActual());
+  });
+
   window.addEventListener('hashchange', function() {
     var h = location.hash.replace('#', '') || 'inicio';
     mostrarPagina(h);
@@ -1330,10 +1383,19 @@ function iniciarApp() {
 }
 
 // ==========================================
-// SPA ROUTER
+// SPA ROUTER (COMPATIBLE CON GITHUB Y APPS SCRIPT)
 // ==========================================
+function obtenerRutaActual() {
+  return location.hash ? location.hash.replace('#', '') : 'inicio';
+}
+
 function irAPagina(p) {
-  location.hash = p;
+  if (p === 'inicio') {
+    try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch(e) { location.hash = ''; }
+    mostrarPagina('inicio');
+  } else {
+    location.hash = p;
+  }
 }
 
 function mostrarPagina(p) {
@@ -1473,7 +1535,6 @@ function manejarSubidaComprobante() {
   reader.onload = function(e) {
     var img = new Image();
     img.onload = function() {
-      // Redimensionar si excede 1200px para que suba rápido en conexiones móviles
       var maxDim = 1200;
       var ancho = img.width;
       var alto = img.height;
@@ -1493,7 +1554,6 @@ function manejarSubidaComprobante() {
       var ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, ancho, alto);
 
-      // Comprimir a JPEG calidad 0.75 (archivo liviano de ~200kb)
       var base64Comprimido = canvas.toDataURL('image/jpeg', 0.75);
 
       estado.textContent = 'Subiendo comprobante…';
@@ -1617,10 +1677,9 @@ function renderizarTodo(res) {
     };
   }
 
- // 3. Discriminación Inteligente: Libros a la Venta vs Próximos Lanzamientos
+  // 3. Discriminación Inteligente: Libros a la Venta vs Próximos Lanzamientos
   clasificarYRenderizarLibros(DATOS.libros || []);
 
-  // Detector inteligente: solo activa el buscador si hay más de 10 libros o autores
   var totalItems = (DATOS.libros ? DATOS.libros.length : 0) + (DATOS.autores ? DATOS.autores.length : 0);
   var secBuscador = document.getElementById('sec-buscador-catalogo');
   if (secBuscador) {
@@ -1652,14 +1711,74 @@ function renderizarTodo(res) {
   // 7. Secciones y Subpáginas
   renderizarAgendaSecciones(DATOS.agenda);
   renderizarTalleresSecciones(DATOS.talleres);
- renderizarServiciosSecciones(DATOS.servicios, DATOS.combosDestacados);
+  renderizarServiciosSecciones(DATOS.servicios, DATOS.combosDestacados);
   renderizarAutores(DATOS.autores);
   renderizarFaq(DATOS.faq || []);
   renderizarPrensaEditorial(DATOS.prensaEditorial || []);
   iniciarTemporizadores();
+  actualizarSeoDinamico(DATOS);
 
-  var h = location.hash.replace('#', '') || 'inicio';
-  mostrarPagina(h);
+  mostrarPagina(obtenerRutaActual());
+
+  // Si alguien entró desde un link compartido de un libro (?libro=id), lo abre directo
+  var paramsEntrada = new URLSearchParams(window.location.search);
+  if (paramsEntrada.get('libro')) {
+    abrirModalLibroPorId(paramsEntrada.get('libro'));
+  }
+}
+
+// ==========================================
+// MOTOR SEO DINÁMICO (SCHEMA.ORG LIBROS & FAQ PARA GOOGLE)
+// ==========================================
+function actualizarSeoDinamico(datos) {
+  try {
+    var cfg = datos.config || {};
+    if (cfg.logo_animado_url) {
+      var ogImg = document.getElementById('og-image-dinamica');
+      if (ogImg) ogImg.setAttribute('content', cfg.logo_animado_url);
+    }
+
+    var grafoSeo = [
+      {
+        "@type": "BookStore",
+        "name": cfg.site_nombre || "Lorem Ipsum Ediciones",
+        "description": cfg.hero_bajada || "Editorial independiente en Argentina.",
+        "url": window.location.origin + window.location.pathname
+      }
+    ];
+
+    (datos.libros || []).forEach(function(lib) {
+      grafoSeo.push({
+        "@type": "Book",
+        "name": lib.titulo,
+        "author": { "@type": "Person", "name": lib.autor || "Autor de la Editorial" },
+        "description": lib.sinopsis_corta || lib.sinopsis_larga || "",
+        "image": lib.portada_url || "",
+        "publisher": { "@type": "Organization", "name": "Lorem Ipsum Ediciones" }
+      });
+    });
+
+    if (datos.faq && datos.faq.length > 0) {
+      grafoSeo.push({
+        "@type": "FAQPage",
+        "mainEntity": datos.faq.map(function(f) {
+          return {
+            "@type": "Question",
+            "name": f.pregunta,
+            "acceptedAnswer": { "@type": "Answer", "text": f.respuesta }
+          };
+        })
+      });
+    }
+
+    var elSchema = document.getElementById('schema-editorial');
+    if (elSchema) {
+      elSchema.textContent = JSON.stringify({
+        "@context": "https://schema.org",
+        "@graph": grafoSeo
+      });
+    }
+  } catch (e) {}
 }
 
 // ==========================================
@@ -1703,10 +1822,7 @@ function clasificarYRenderizarLibros(todosLosLibros) {
     }
   });
 
-  // 1. Renderizar Ebooks a la Venta (Swipe horizontal)
   renderizarEbooksDisponibles(aLaVenta);
-
-  // 2. Renderizar Próximos Lanzamientos (Coverflow 3D)
   LIBROS_PROXIMOS_LISTA = proximos;
   renderizarCarruselLanzamientos(proximos);
 }
@@ -2354,7 +2470,6 @@ function abrirModalLibro(lib) {
   var waLink = wa + (wa.indexOf('?') !== -1 ? '&' : '?') + 'text=' + msg;
   var linkCta = lib.link_landing_o_preventa || waLink;
 
-  // Si está marcado para venta directa muestra precio y botón de compra; si es próximo lanzamiento, los oculta
   var esVenta = lib._esParaVender !== false && lib.es_ebook;
   var precioHtml = (esVenta && lib.precio_ebook) 
     ? '<div class="precio-tag" style="font-size:1.3rem;margin:6px 0 10px 0;">' + escapeHtml(lib.precio_ebook) + '</div>' 
@@ -2379,9 +2494,19 @@ function abrirModalLibro(lib) {
       : '') +
     '<a href="' + linkCta + '" target="_blank" class="btn' + (esVenta ? '' : ' btn-terracota') + '" style="width:100%;justify-content:center;">' +
       (esVenta ? 'Consultar por WhatsApp ' : 'Consultar / Preventa ') + ic('flecha', 'ic-sm') +
-    '</a>';
+    '</a>' +
+    '<button onclick="compartirLibroWhatsApp(\'' + lib.id + '\', this)" class="btn" style="width:100%;justify-content:center;margin-top:8px;">🔗 Copiar link del libro (con portada para WhatsApp)</button>';
 
   document.getElementById('modal').classList.add('activo');
+}
+
+function compartirLibroWhatsApp(libroId, btn) {
+  var linkSeguro = 'https://loremipsumediciones-glitch.github.io/web/?libro=' + encodeURIComponent(libroId);
+  navigator.clipboard.writeText(linkSeguro).then(function() {
+    var txt = btn.innerHTML;
+    btn.innerHTML = '¡Link del libro copiado! ✓';
+    setTimeout(function() { btn.innerHTML = txt; }, 2000);
+  });
 }
 
 function abrirModalInscripcionTaller(talId) {
@@ -2447,8 +2572,6 @@ function enviarInscripcionTaller(e, tallerId, tituloTaller) {
         document.getElementById('form-ins-taller').style.display = 'none';
         document.getElementById('btn-wa-confirmar-ins').href = waFinal;
         document.getElementById('ins-confirmado-wrap').style.display = 'block';
-
-        // Abre WhatsApp de forma automática
         window.open(waFinal, '_blank');
       } else {
         errEl.textContent = 'Error: ' + ((res && res.error) ? res.error : 'No se pudo guardar la inscripción.');
@@ -2475,12 +2598,10 @@ function abrirModalAutor(id) {
   var a = (DATOS.autores || []).find(function(item) { return item.id === id; });
   if (!a) return;
 
-  // target="_top" permite salir del iframe de Google Sites limpiamente
-  var linkAutorHtml = a.url_landing_google_sites
-    ? '<a href="' + a.url_landing_google_sites + '" target="_top" class="btn btn-terracota" style="width:100%;justify-content:center;margin-top:16px;">' +
-        'Ver sitio oficial del autor ' + ic('flecha', 'ic-sm') +
-      '</a>'
-    : '';
+  var linkDestino = a.url_landing_google_sites || ('?autor=' + encodeURIComponent(a.slug || a.id));
+  var linkAutorHtml = '<a href="' + linkDestino + '" target="_top" class="btn btn-terracota" style="width:100%;justify-content:center;margin-top:16px;">' +
+      'Ver sitio oficial del autor ' + ic('flecha', 'ic-sm') +
+    '</a>';
 
   document.getElementById('modal-cuerpo').innerHTML =
     '<div style="display:flex;gap:18px;align-items:center;margin-bottom:20px;">' +
@@ -2496,7 +2617,6 @@ function abrirModalAutor(id) {
   document.getElementById('modal').classList.add('activo');
 }
 
-// Abre el modal del autor buscándolo por su nombre escrito en el libro
 function abrirModalAutorPorNombre(nombre) {
   if (!nombre || !DATOS || !DATOS.autores) return;
   var busqueda = String(nombre).trim().toLowerCase();
