@@ -28,15 +28,25 @@
 <meta name="twitter:title" content="Lorem Ipsum Ediciones — Una editorial pensada para el escritor independiente.">
 <meta name="twitter:description" content="Cruce entre diseño, edición y un enfoque en el poder de la palabra.">
 
-<!-- Datos Estructurados Schema.org (Le dice a Google que sos una Editorial Oficial) -->
+<!-- Datos Estructurados Schema.org (Conecta Web + Google Business Tucumán + Instagram) -->
 <script type="application/ld+json" id="schema-editorial">
 {
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "Lorem Ipsum Ediciones",
   "alternateName": "Lorem Ipsum Editorial",
-  "description": "Proyecto editorial independiente dedicado a la creación, edición y preservación de obras literarias con identidad visual propia.",
-  "url": "https://loremipsumediciones-glitch.github.io/web/"
+  "description": "Lorem Ipsum Ediciones es un sello independiente con sede en San Miguel de Tucumán. Brindamos servicios editoriales integrales para autores e instituciones.",
+  "url": "https://loremipsumediciones-glitch.github.io/web/",
+  "telephone": "+54-381-654-5858",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "San Miguel de Tucumán",
+    "addressRegion": "Tucumán",
+    "addressCountry": "AR"
+  },
+  "sameAs": [
+    "https://www.instagram.com/loremipsumediciones/"
+  ]
 }
 </script>
 
@@ -1740,10 +1750,20 @@ function actualizarSeoDinamico(datos) {
 
     var grafoSeo = [
       {
-        "@type": "BookStore",
+        "@type": "Organization",
         "name": cfg.site_nombre || "Lorem Ipsum Ediciones",
-        "description": cfg.hero_bajada || "Editorial independiente en Argentina.",
-        "url": window.location.origin + window.location.pathname
+        "description": "Lorem Ipsum Ediciones es un sello independiente con sede en San Miguel de Tucumán. Brindamos servicios editoriales integrales para autores e instituciones.",
+        "url": "https://loremipsumediciones-glitch.github.io/web/",
+        "telephone": "+54-381-654-5858",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "San Miguel de Tucumán",
+          "addressRegion": "Tucumán",
+          "addressCountry": "AR"
+        },
+        "sameAs": [
+          "https://www.instagram.com/loremipsumediciones/"
+        ]
       }
     ];
 
