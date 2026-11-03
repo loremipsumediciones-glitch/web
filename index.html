@@ -2508,8 +2508,9 @@ function abrirModalLibro(lib) {
 }
 
 function compartirLibroWhatsApp(identificadorLibro, btn) {
-  var linkConPortada = URL_BACKEND_EXEC + '?libro=' + encodeURIComponent(identificadorLibro);
-  navigator.clipboard.writeText(linkConPortada).then(function() {
+  var baseUrl = window.location.origin + window.location.pathname;
+  var linkLimpio = baseUrl + '?libro=' + encodeURIComponent(identificadorLibro);
+  navigator.clipboard.writeText(linkLimpio).then(function() {
     var txt = btn.innerHTML;
     btn.innerHTML = '¡Link del libro copiado! ✓';
     setTimeout(function() { btn.innerHTML = txt; }, 2000);
