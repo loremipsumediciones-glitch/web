@@ -1859,12 +1859,20 @@ function renderizarEbooksDisponibles(libros) {
   }).join('');
 }
 
+function crearSlugLibro(texto) {
+  return String(texto || '').toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
 function abrirModalLibroPorId(idOTitulo) {
   if (!idOTitulo) return;
   var buscado = String(idOTitulo).trim().toLowerCase();
+  var buscadoSlug = crearSlugLibro(idOTitulo);
   var lib = (DATOS.libros || []).find(function(l) {
     return String(l.id || '').trim().toLowerCase() === buscado ||
-           String(l.titulo || '').trim().toLowerCase() === buscado;
+           String(l.titulo || '').trim().toLowerCase() === buscado ||
+           crearSlugLibro(l.titulo) === buscadoSlug;
   });
   if (lib) {
     abrirModalLibro(lib);
@@ -2502,15 +2510,17 @@ function abrirModalLibro(lib) {
     '<a href="' + linkCta + '" target="_blank" class="btn' + (esVenta ? '' : ' btn-terracota') + '" style="width:100%;justify-content:center;">' +
       (esVenta ? 'Consultar por WhatsApp ' : 'Consultar / Preventa ') + ic('flecha', 'ic-sm') +
     '</a>' +
-    '<button onclick="compartirLibroWhatsApp(\'' + escapeHtml(lib.id || lib.titulo).replace(/'/g, "\\'") + '\', this)" class="btn" style="width:100%;justify-content:center;margin-top:8px;">🔗 Copiar link de este libro</button>';
+    '<button onclick="compartirLibroWhatsApp(\'' + escapeHtml(lib.titulo).replace(/'/g, "\\'") + '\', \'' + escapeHtml(lib.autor || '').replace(/'/g, "\\'") + '\', this)" class="btn" style="width:100%;justify-content:center;margin-top:8px;">🔗 Copiar link de este libro</button>';
 
   document.getElementById('modal').classList.add('activo');
 }
 
-function compartirLibroWhatsApp(identificadorLibro, btn) {
+function compartirLibroWhatsApp(tituloLibro, autorLibro, btn) {
   var baseUrl = window.location.origin + window.location.pathname;
-  var linkLimpio = baseUrl + '?libro=' + encodeURIComponent(identificadorLibro);
-  navigator.clipboard.writeText(linkLimpio).then(function() {
+  var slug = crearSlugLibro(tituloLibro);
+  var linkLimpio = baseUrl + '?libro=' + slug;
+  var textoParaCompartir = '📖 *' + tituloLibro + '*' + (autorLibro ? (' — ' + autorLibro) : '') + '\n' + linkLimpio;
+  navigator.clipboard.writeText(textoParaCompartir).then(function() {
     var txt = btn.innerHTML;
     btn.innerHTML = '¡Link del libro copiado! ✓';
     setTimeout(function() { btn.innerHTML = txt; }, 2000);
