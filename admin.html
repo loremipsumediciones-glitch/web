@@ -735,7 +735,7 @@ function escapeHtmlAdmin(t) {
 }
 
 function copiarLinkEmbedAutor(slug) {
-  var linkCompleto = 'https://loremipsumediciones-glitch.github.io/web/?autor=' + encodeURIComponent(slug);
+  var linkCompleto = 'https://loremipsumediciones.com.ar/autor?autor=' + encodeURIComponent(slug);
 
   navigator.clipboard.writeText(linkCompleto).then(function() {
     mostrarToast('¡Link del autor copiado! ✓');
