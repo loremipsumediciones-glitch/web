@@ -9,8 +9,9 @@
 <meta name="description" content="Editorial independiente en Argentina dedicada a la edición, diseño, publicación de libros físicos y ebooks, talleres literarios y acompañamiento integral para autores.">
 <meta name="keywords" content="Lorem Ipsum Ediciones, editorial independiente, publicar un libro, servicios editoriales, edición de libros, corrección literaria, maquetación, ebooks, talleres de escritura, Argentina">
 <meta name="author" content="Lorem Ipsum Ediciones">
-<meta name="robots" content="index, follow, max-image-preview:large"
+<meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#121316">
+<link rel="canonical" href="https://loremipsumediciones.com.ar/">
 
 <!-- Favicon Oficial (Sello Geométrico Terracota #A9563F) -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='330 285 263 285' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='330' y='285' width='263' height='285' rx='45' fill='%23121316'/%3E%3Cg fill='none' stroke='%23A9563F' stroke-width='18' stroke-linejoin='miter' stroke-linecap='butt'%3E%3Crect x='400' y='314' width='122' height='93'/%3E%3Cpath d='M431 380 V348 H491 V380'/%3E%3Cpath d='M461 372 V541'/%3E%3Cpath d='M400 514 V541 H522 V514'/%3E%3Cpath d='M386 359 H359 V490 H429 V439 H394 V466'/%3E%3Cpath d='M536 359 H563 V490 H493 V439 H528 V466'/%3E%3C/g%3E%3C/svg%3E">
@@ -21,7 +22,8 @@
 <meta property="og:site_name" content="Lorem Ipsum Ediciones">
 <meta property="og:title" content="Lorem Ipsum Ediciones — Una editorial pensada para el escritor independiente.">
 <meta property="og:description" content="Cruce entre diseño, edición y un enfoque en el poder de la palabra.">
-<meta property="og:image" id="og-image-dinamica" content="https://loremipsumediciones-glitch.github.io/web/logo.png">
+<meta property="og:url" content="https://loremipsumediciones.com.ar/">
+<meta property="og:image" id="og-image-dinamica" content="https://loremipsumediciones.com.ar/logo.png">
 
 <!-- Twitter / X Card -->
 <meta name="twitter:card" content="summary_large_image">
@@ -36,7 +38,7 @@
   "name": "Lorem Ipsum Ediciones",
   "alternateName": "Lorem Ipsum Editorial",
   "description": "Lorem Ipsum Ediciones es un sello independiente con sede en San Miguel de Tucumán. Brindamos servicios editoriales integrales para autores e instituciones.",
-  "url": "https://loremipsumediciones-glitch.github.io/web/",
+  "url": "https://loremipsumediciones.com.ar/",
   "telephone": "+54-381-654-5858",
   "address": {
     "@type": "PostalAddress",
@@ -55,13 +57,13 @@
 const URL_BACKEND_EXEC = "https://script.google.com/macros/s/AKfycbwaErOqrlFddu2Dnq3ZydRX6wLaMd2L2wwCDGpeD1rMV-GJOh_jKWgy7Tjux8-psdoP/exec";
 
 (function() {
-  if (window.location.hostname.indexOf('github.io') !== -1) {
+  if (window.location.hostname.indexOf('script.google') === -1 && window.location.hostname.indexOf('googleusercontent') === -1) {
     var p = new URLSearchParams(window.location.search);
     var path = window.location.pathname;
-    if (p.get('admin') && path.indexOf('admin.html') === -1) {
-      window.location.replace('admin.html');
-    } else if (p.get('autor') && path.indexOf('autor.html') === -1) {
-      window.location.replace('autor.html?autor=' + encodeURIComponent(p.get('autor')));
+    if (p.get('admin') && path.indexOf('admin') === -1) {
+      window.location.replace('/admin');
+    } else if (p.get('autor') && path.indexOf('autor') === -1) {
+      window.location.replace('/autor?autor=' + encodeURIComponent(p.get('autor')));
     }
   }
 })();
@@ -1393,19 +1395,27 @@ function iniciarApp() {
 }
 
 // ==========================================
-// SPA ROUTER (COMPATIBLE CON GITHUB Y APPS SCRIPT)
+// SPA ROUTER (URLS LIMPIAS SIN # EN TU DOMINIO)
 // ==========================================
 function obtenerRutaActual() {
-  return location.hash ? location.hash.replace('#', '') : 'inicio';
+  if (location.hash) return location.hash.replace('#', '');
+  var path = window.location.pathname.replace(/^\/+|\/+$/g, '');
+  if (!path || path === 'index.html') return 'inicio';
+  return path;
 }
 
 function irAPagina(p) {
-  if (p === 'inicio') {
-    try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch(e) { location.hash = ''; }
-    mostrarPagina('inicio');
-  } else {
-    location.hash = p;
+  var esAppsScript = window.location.hostname.indexOf('google') !== -1;
+  if (esAppsScript) {
+    location.hash = (p === 'inicio') ? '' : p;
+    mostrarPagina(p);
+    return;
   }
+  var nuevaUrl = (p === 'inicio') ? '/' : ('/' + p);
+  try {
+    history.pushState({ pagina: p }, '', nuevaUrl);
+  } catch(e) {}
+  mostrarPagina(p);
 }
 
 function mostrarPagina(p) {
@@ -1753,7 +1763,7 @@ function actualizarSeoDinamico(datos) {
         "@type": "Organization",
         "name": cfg.site_nombre || "Lorem Ipsum Ediciones",
         "description": "Lorem Ipsum Ediciones es un sello independiente con sede en San Miguel de Tucumán. Brindamos servicios editoriales integrales para autores e instituciones.",
-        "url": "https://loremipsumediciones-glitch.github.io/web/",
+        "url": "https://loremipsumediciones.com.ar/",
         "telephone": "+54-381-654-5858",
         "address": {
           "@type": "PostalAddress",
@@ -2636,7 +2646,8 @@ function abrirModalAutor(id) {
   var a = (DATOS.autores || []).find(function(item) { return item.id === id; });
   if (!a) return;
 
-  var linkDestino = a.url_landing_google_sites || ('?autor=' + encodeURIComponent(a.slug || a.id));
+  var slugLimpio = crearSlugLibro(a.slug || a.nombre || a.id);
+  var linkDestino = a.url_landing_google_sites || ('/autor?autor=' + slugLimpio);
   var linkAutorHtml = '<a href="' + linkDestino + '" target="_top" class="btn btn-terracota" style="width:100%;justify-content:center;margin-top:16px;">' +
       'Ver sitio oficial del autor ' + ic('flecha', 'ic-sm') +
     '</a>';
