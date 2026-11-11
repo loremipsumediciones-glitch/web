@@ -431,9 +431,13 @@ a { color: inherit; text-decoration: none; }
 </head>
 <body>
 
-<!-- BARRA INSTITUCIONAL SUPERIOR -->
+<!-- BARRA INSTITUCIONAL SUPERIOR MEJORADA -->
 <div class="top-nav">
-  <span class="editorial-brand" id="editorial-brand-txt">Lorem Ipsum Ediciones</span>
+  <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+    <img id="editorial-logo-nav" src="" alt="Logo" style="height:28px;width:auto;display:none;">
+    <span class="editorial-brand" id="editorial-brand-txt" style="color:var(--tinta-arena);font-family:var(--serif);font-size:1.25rem;letter-spacing:.03em;text-transform:none;">Lorem Ipsum Ediciones</span>
+  </a>
+  <a href="/" class="btn" style="padding:7px 14px;font-size:10px;">← Catálogo Editorial</a>
 </div>
 
 <!-- SKELETON LOADER -->
@@ -631,6 +635,10 @@ function renderizarPaginaAutor(res) {
   document.getElementById('autor-bio-destacada').textContent = a.bio_corta || a.bio_completa;
   document.getElementById('autor-bio-completa').textContent = a.bio_completa;
   if (cfg.site_nombre) document.getElementById('editorial-brand-txt').textContent = cfg.site_nombre;
+  if (cfg.logo_url) {
+    var logoNav = document.getElementById('editorial-logo-nav');
+    if (logoNav) { logoNav.src = cfg.logo_url; logoNav.style.display = 'block'; }
+  }
 
   // Botón WhatsApp directo
   var btnContacto = document.getElementById('btn-autor-contacto');
