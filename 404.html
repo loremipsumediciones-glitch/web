@@ -769,15 +769,15 @@ a { color: inherit; text-decoration: none; }
 
 /* Simulador Interactivo de E-book (Estética Grafito & Terracota) */
 .li-sim-wrap {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 36px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  margin: 40px 0 50px 0;
+  gap: 28px;
+  margin: 26px 0 10px 0;
 }
-@media (max-width: 860px) { .li-sim-wrap { grid-template-columns: 1fr; } }
-
 .li-sim-stage {
+  width: 100%;
+  max-width: 520px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1037,34 +1037,103 @@ a { color: inherit; text-decoration: none; }
       <div id="talleres-preview-cards" class="home-swipe-track"></div>
     </div>
 
-    <!-- BLOQUE FIJO VISIBLE PARA GOOGLE SEO (TUCUMÁN & SERVICIOS) -->
-    <div class="contenedor" id="sec-pilares-seo" style="padding-top:20px;padding-bottom:20px;">
-      <div class="eyebrow">Oficio Editorial en Tucumán & Argentina</div>
-      <h2 class="titulo-seccion" style="margin-bottom:10px;">Servicios Editoriales para Autores Independientes</h2>
-      <p class="titulo-seccion-sub" style="margin-bottom:0;">
-        Acompañamos tu obra desde el borrador hasta el libro publicado: maquetación profesional, corrección de estilo y ortotipográfica, libros impresos y publicación digital con registro legal.
-      </p>
-      <div class="pilares-seo-grid">
-        <div class="glass pilar-seo-card">
-          <span class="badge-tag">Sin exclusividad</span>
-          <h3>Publicación de Ebooks (ePub + PDF)</h3>
-          <p>Maquetación profesional en doble formato (ePub para Kindle y PDF optimizado para celular), portada, ISBN Digital y DNDA. El 100% de tus ventas es tuyo.</p>
+    <!-- SECCIÓN EN INICIO: SIMULADOR KINDLE + TARJETAS EXPLICATIVAS DESLIZABLES -->
+    <div class="contenedor" id="sec-simulador-inicio" style="padding-top:20px;padding-bottom:20px;">
+      <div class="glass" style="padding:36px 26px;border-top:3px solid var(--terracota);">
+        <div style="text-align:center;max-width:700px;margin:0 auto;">
+          <div class="eyebrow" style="justify-content:center;">Oficio Editorial en Tucumán & Argentina</div>
+          <h2 class="titulo-seccion" style="font-size:clamp(1.9rem, 3.5vw, 2.7rem);margin-bottom:10px;">Tu libro digital adaptado a cualquier pantalla</h2>
+          <p style="color:var(--tinta-media);font-size:0.95rem;line-height:1.65;margin-bottom:0;">
+            Maquetación de libros físicos y ebooks (ePub + PDF), corrección ortotipográfica y de estilo, y registro ISBN y DNDA. Probá en vivo cómo lee tu audiencia:
+          </p>
         </div>
-        <div class="glass pilar-seo-card">
-          <span class="badge-tag">Control de cambios</span>
-          <h3>Corrección Ortotipográfica y de Estilo</h3>
-          <p>Revisión línea por línea de ortografía, puntuación, rayas de diálogo, fluidez y sintaxis en Word manteniendo intacta tu voz de autor.</p>
+
+        <div class="li-sim-wrap" id="li-ebook-sim" data-format="kindle" data-theme="light">
+          <div class="li-sim-stage">
+            <div class="li-sim-device">
+              <div class="li-sim-screen" tabindex="0">
+                <span class="li-sim-cap">Capítulo I · Muestra de maquetación</span>
+                <h3 class="li-sim-titulo">Lo que queda en el papel</h3>
+                <p class="li-sim-p">Cuando alguien termina un manuscrito, suele pensar que el trabajo difícil ya pasó. Sin embargo, entre un archivo de texto y un libro real hay un oficio silencioso que el lector siente apenas pasa la primera página.</p>
+                <p class="li-sim-p">—¿Se nota tanto la diferencia? —preguntó Martín, apoyando el cuaderno sobre la mesa.</p>
+                <p class="li-sim-p">—No siempre sabés explicarlo —respondió la editora—, pero lo notás en el aire entre líneas, en cómo respiran los diálogos y en el descanso de la vista al leer en cualquier pantalla.</p>
+                <p class="li-sim-p">Cambiá de dispositivo o agrandá la letra con los botones de abajo para comprobar cómo fluye el texto en un ePub profesional maquetado por Lorem Ipsum Ediciones.</p>
+              </div>
+              <span class="li-sim-brand">E-Reader</span>
+            </div>
+
+            <div class="li-sim-controles">
+              <div class="li-sim-grupo">
+                <button type="button" class="li-sim-btn" data-sim-format="kindle" aria-pressed="true">Kindle</button>
+                <button type="button" class="li-sim-btn" data-sim-format="celular" aria-pressed="false">Celular</button>
+                <button type="button" class="li-sim-btn" data-sim-format="tablet" aria-pressed="false">Tablet</button>
+              </div>
+              <div class="li-sim-grupo">
+                <button type="button" class="li-sim-btn" data-sim-size="-2">A−</button>
+                <span id="li-sim-size-lbl" style="font-family:var(--mono);font-size:11px;color:var(--tinta-media);align-self:center;min-width:44px;text-align:center;">15 px</span>
+                <button type="button" class="li-sim-btn" data-sim-size="2">A+</button>
+                <button type="button" class="li-sim-btn" id="li-sim-theme-btn" aria-pressed="false">Modo Grafito</button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="glass pilar-seo-card">
-          <span class="badge-tag">Bookcell 80g</span>
-          <h3>Maquetación e Impresión de Libros</h3>
-          <p>Diseño interior sin errores tipográficos, armado de tapa con código de barras ISBN y tiradas accesibles desde 50 ejemplares desde Tucumán.</p>
+
+        <!-- Tarjetas explicativas deslizables horizontalmente -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin:28px 0 8px 0;flex-wrap:wrap;gap:8px;">
+          <span class="eyebrow" style="margin:0;">Qué incluye nuestro oficio editorial</span>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--tinta-tenue);">← Deslizá para leer cada tarjeta →</span>
         </div>
-      </div>
-      <div style="margin-top:24px;">
-        <button class="btn btn-terracota" onclick="irAPagina('servicios')">Ver planes, precios y probar simulador de ebook →</button>
+
+        <div class="home-swipe-track">
+          <div class="glass card-item" style="border-left:3px solid var(--terracota);">
+            <div>
+              <span class="badge-tag">Formato 1 · Incluido</span>
+              <h3 class="card-title" style="font-size:1.45rem;">ePub Profesional Fluido</h3>
+              <p class="card-desc" style="margin-bottom:0;">El estándar internacional para Kindle, tablets y apps de lectura. El texto se acomoda solo a cada pantalla, permite agrandar la letra y pasar a modo nocturno.</p>
+            </div>
+          </div>
+
+          <div class="glass card-item">
+            <div>
+              <span class="badge-tag">Formato 2 · Incluido</span>
+              <h3 class="card-title" style="font-size:1.45rem;">PDF Editorial para WhatsApp</h3>
+              <p class="card-desc" style="margin-bottom:0;">En Argentina muchos lectores compran directo por WhatsApp y abren el libro en el celular sin bajar aplicaciones. Entregamos ePub + PDF para que no pierdas ninguna venta.</p>
+            </div>
+          </div>
+
+          <div class="glass card-item">
+            <div>
+              <span class="badge-tag">100% Tuyo</span>
+              <h3 class="card-title" style="font-size:1.45rem;">Cero comisiones y Sin Exclusividad</h3>
+              <p class="card-desc" style="margin-bottom:0;">A diferencia de otras editoriales que retienen el 50% de tus ventas, vos te quedás con el 100% de tus ingresos y conservás total libertad sobre tu obra.</p>
+            </div>
+          </div>
+
+          <div class="glass card-item">
+            <div>
+              <span class="badge-tag">RAE & Sousa</span>
+              <h3 class="card-title" style="font-size:1.45rem;">Corrección Ortotipográfica y de Estilo</h3>
+              <p class="card-desc" style="margin-bottom:0;">Trabajamos en Word con Control de Cambios activado: pulimos sintaxis, puntuación, rayas de diálogo (—) y comillas latinas (« ») respetando tu voz.</p>
+            </div>
+          </div>
+
+          <div class="glass card-item">
+            <div>
+              <span class="badge-tag">Bookcell 80g</span>
+              <h3 class="card-title" style="font-size:1.45rem;">Edición e Impresión en Papel</h3>
+              <p class="card-desc" style="margin-bottom:0;">Desde Tucumán realizamos maquetación interior, diseño de tapa con código ISBN, depósito en DNDA y tiradas accesibles desde 50 ejemplares.</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:20px;">
+          <button class="btn btn-terracota" onclick="irAPagina('servicios')" style="padding:14px 26px;">Ver planes, precios y detalles de servicios →</button>
+        </div>
       </div>
     </div>
+
+    <!-- EN EL HOME: COMBOS DESTACADOS (Swipe horizontal conectado a tu panel Admin) -->
+    <div class="contenedor" id="sec-preview-servicios">
       <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
         <div>
           <div class="eyebrow">Propuestas Destacadas</div>
@@ -1253,7 +1322,7 @@ a { color: inherit; text-decoration: none; }
 
 
   <!-- ======================================================================
-       4. SUBPÁGINA: SERVICIOS DETALLADOS (CATÁLOGO COMPLETO + SIMULADOR)
+       4. SUBPÁGINA: SERVICIOS DETALLADOS (CATÁLOGO COMPLETO)
        ====================================================================== -->
   <section class="page" data-page="servicios" id="page-servicios">
     <div class="contenedor">
@@ -1262,66 +1331,11 @@ a { color: inherit; text-decoration: none; }
       <h1 class="titulo-seccion">Servicios Editoriales & Packs de Publicación</h1>
       <p class="titulo-seccion-sub">Maquetación de libros físicos y digitales (ePub + PDF), corrección ortotipográfica y de estilo, y gestión legal de ISBN y DNDA. Conservás el 100% de tus derechos y de tus ventas.</p>
       
-      <!-- Acá se cargan automáticamente tus Packs desde Google Sheets -->
-      <div id="servicios-lista-completa" class="grid-cards" style="margin-bottom:60px;"></div>
+      <!-- Acá se cargan automáticamente tus Packs desde tu panel Admin -->
+      <div id="servicios-lista-completa" class="grid-cards" style="margin-bottom:40px;"></div>
 
-      <!-- SIMULADOR INTERACTIVO DE E-BOOK -->
-      <div class="glass" style="padding:36px 28px;margin-bottom:40px;border-top:3px solid var(--terracota);">
-        <div class="eyebrow">Probá la experiencia de lectura</div>
-        <h2 class="titulo-seccion" style="font-size:2.2rem;margin-bottom:8px;">Tu libro digital adaptado a cualquier pantalla</h2>
-        <p style="color:var(--tinta-media);font-size:0.95rem;max-width:680px;margin-bottom:10px;">
-          Maquetamos tu obra en formato <strong>ePub fluido</strong> y además incluimos el <strong>PDF editorial optimizado</strong> para que tus lectores puedan abrirlo directo desde WhatsApp o leerlo en Kindle, celular o tablet.
-        </p>
-
-        <div class="li-sim-wrap" id="li-ebook-sim" data-format="kindle" data-theme="light">
-          <div class="li-sim-stage">
-            <div class="li-sim-device">
-              <div class="li-sim-screen" tabindex="0">
-                <span class="li-sim-cap">Capítulo I · Muestra de maquetación</span>
-                <h3 class="li-sim-titulo">Lo que queda en el papel</h3>
-                <p class="li-sim-p">Cuando alguien termina un manuscrito, suele pensar que el trabajo difícil ya pasó. Sin embargo, entre un archivo de texto y un libro real hay un oficio silencioso que el lector siente apenas pasa la primera página.</p>
-                <p class="li-sim-p">—¿Se nota tanto la diferencia? —preguntó Martín, apoyando el cuaderno sobre la mesa.</p>
-                <p class="li-sim-p">—No siempre sabés explicarlo —respondió la editora—, pero lo notás en el aire entre líneas, en cómo respiran los diálogos y en el descanso de la vista al leer en cualquier pantalla.</p>
-                <p class="li-sim-p">Cambiá de dispositivo o agrandá la letra con los botones de abajo para comprobar cómo fluye el texto en un ePub profesional maquetado por Lorem Ipsum Ediciones.</p>
-              </div>
-              <span class="li-sim-brand">E-Reader</span>
-            </div>
-
-            <div class="li-sim-controles">
-              <div class="li-sim-grupo">
-                <button type="button" class="li-sim-btn" data-sim-format="kindle" aria-pressed="true">Kindle</button>
-                <button type="button" class="li-sim-btn" data-sim-format="celular" aria-pressed="false">Celular</button>
-                <button type="button" class="li-sim-btn" data-sim-format="tablet" aria-pressed="false">Tablet</button>
-              </div>
-              <div class="li-sim-grupo">
-                <button type="button" class="li-sim-btn" data-sim-size="-2">A−</button>
-                <span id="li-sim-size-lbl" style="font-family:var(--mono);font-size:11px;color:var(--tinta-media);align-self:center;min-width:44px;text-align:center;">15 px</span>
-                <button type="button" class="li-sim-btn" data-sim-size="2">A+</button>
-                <button type="button" class="li-sim-btn" id="li-sim-theme-btn" aria-pressed="false">Modo Grafito</button>
-              </div>
-            </div>
-          </div>
-
-          <div style="display:flex;flex-direction:column;gap:16px;">
-            <div class="glass" style="padding:22px;border-left:3px solid var(--terracota);">
-              <span class="badge-tag">Formato 1 · Incluido</span>
-              <h3 style="font-size:1.5rem;margin-bottom:8px;">ePub Profesional Fluido</h3>
-              <p style="font-size:0.9rem;color:var(--tinta-media);margin:0;line-height:1.6;">
-                El estándar internacional para Kindle, Google Play Libros y tablets. El texto se acomoda solo a cada pantalla, permite agrandar la letra, cambiar a modo nocturno y navegar por índice interactivo.
-              </p>
-            </div>
-            <div class="glass" style="padding:22px;border-left:3px solid var(--borde-vidrio-fuerte);">
-              <span class="badge-tag badge-pasado">Formato 2 · También incluido</span>
-              <h3 style="font-size:1.5rem;margin-bottom:8px;">PDF Editorial para Celular & WhatsApp</h3>
-              <p style="font-size:0.9rem;color:var(--tinta-media);margin:0;line-height:1.6;">
-                En Argentina muchos lectores compran por WhatsApp y abren el libro directo desde el teléfono sin tener aplicaciones de ePub. Entregamos ambos archivos para que no pierdas ni una venta.
-              </p>
-            </div>
-            <div style="padding:14px 16px;background:rgba(0,0,0,0.3);border-radius:var(--radius-sm);border:1px solid var(--borde-vidrio);font-size:12.5px;color:var(--tinta-media);line-height:1.6;">
-              <strong style="color:var(--terracota);">Nota legal transparente:</strong> El ISBN Digital cubre exclusivamente la edición electrónica (ePub/PDF). Si luego querés imprimir en papel, la Cámara Argentina del Libro requiere tramitar un ISBN específico para impreso. En ambos casos conservás el 100% de tus derechos y no tenés exclusividad.
-            </div>
-          </div>
-        </div>
+      <div class="glass" style="padding:22px 24px;margin-bottom:34px;border-left:3px solid var(--terracota);font-size:0.92rem;color:var(--tinta-media);line-height:1.65;">
+        <strong style="color:var(--terracota);">Nota legal transparente:</strong> El ISBN Digital cubre exclusivamente la edición electrónica (ePub/PDF). Si en el futuro deseás lanzar una edición impresa en papel, la normativa de la Cámara Argentina del Libro requiere tramitar un ISBN específico para formato impreso. En todos los casos conservás el 100% de tus derechos y trabajamos sin exclusividad.
       </div>
 
       <div style="text-align:center;">
