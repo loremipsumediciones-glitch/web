@@ -874,6 +874,24 @@ a { color: inherit; text-decoration: none; }
   .collage-img img { height: 180px; }
   .contenedor { padding: 40px 20px; }
 }
+.solo-celu-aviso { display: none; font-family: var(--mono); font-size: 11px; color: var(--tinta-tenue); margin-bottom: 12px; }
+@media (max-width: 768px) {
+  .solo-celu-aviso { display: block; }
+  #servicios-lista-completa {
+    display: flex !important;
+    gap: 16px;
+    overflow-x: auto;
+    padding: 8px 4px 20px 4px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--terracota) transparent;
+  }
+  #servicios-lista-completa > .card-item {
+    flex: 0 0 84%;
+    scroll-snap-align: start;
+  }
+}
 </style>
 </head>
 <body>
@@ -1331,6 +1349,13 @@ a { color: inherit; text-decoration: none; }
       <h1 class="titulo-seccion">Servicios Editoriales & Packs de Publicación</h1>
       <p class="titulo-seccion-sub">Maquetación de libros físicos y digitales (ePub + PDF), corrección ortotipográfica y de estilo, y gestión legal de ISBN y DNDA. Conservás el 100% de tus derechos y de tus ventas.</p>
       
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;" id="servicios-filtros">
+        <button type="button" class="li-sim-btn" aria-pressed="true" onclick="filtrarServicios('todos', this)">Todos</button>
+        <button type="button" class="li-sim-btn" aria-pressed="false" onclick="filtrarServicios('ebook', this)">E-books</button>
+        <button type="button" class="li-sim-btn" aria-pressed="false" onclick="filtrarServicios('correccion', this)">Corrección</button>
+        <button type="button" class="li-sim-btn" aria-pressed="false" onclick="filtrarServicios('papel', this)">Libros en Papel</button>
+      </div>
+      <p class="solo-celu-aviso">← Deslizá hacia el costado para explorar cada servicio →</p>
       <!-- Acá se cargan automáticamente tus Packs desde tu panel Admin -->
       <div id="servicios-lista-completa" class="grid-cards" style="margin-bottom:40px;"></div>
 
@@ -2508,8 +2533,17 @@ function renderizarServiciosSecciones(todosLosServicios, combosDestacados) {
   }).join('');
 
   // 2. En la subpágina Servicios: Catálogo completo
+  pintarListaCompletaServicios(todosLosServicios);
+}
+
+function pintarListaCompletaServicios(lista) {
   var contCompleto = document.getElementById('servicios-lista-completa');
-  contCompleto.innerHTML = todosLosServicios.map(function(s) {
+  if (!contCompleto) return;
+  if (!lista || lista.length === 0) {
+    contCompleto.innerHTML = '<p class="card-desc">No hay servicios en esta categoría por el momento.</p>';
+    return;
+  }
+  contCompleto.innerHTML = lista.map(function(s) {
     var destacadoClase = s.es_combo_destacado ? 'card-combo-destacado' : '';
     var badgeCombo = s.es_combo_destacado ? '<span class="badge-tag">Propuesta Integral / Recomendado</span>' : '';
     var precioHtml = s.precio ? '<div class="precio-tag">' + escapeHtml(s.precio) + '</div>' : '';
@@ -2534,6 +2568,22 @@ function renderizarServiciosSecciones(todosLosServicios, combosDestacados) {
       '<button class="btn btn-terracota" onclick="abrirModalServicio(\'' + s.id + '\')" style="width:100%;justify-content:center;">Ver propuesta & ejemplos</button>' +
     '</div>';
   }).join('');
+}
+
+function filtrarServicios(cat, btn) {
+  document.querySelectorAll('#servicios-filtros .li-sim-btn').forEach(function(b) {
+    b.setAttribute('aria-pressed', String(b === btn));
+  });
+  var lista = (DATOS && DATOS.servicios) ? DATOS.servicios : [];
+  var filtrados = lista.filter(function(s) {
+    if (cat === 'todos') return true;
+    var txt = ((s.titulo || '') + ' ' + (s.resumen_home || '')).toLowerCase();
+    if (cat === 'ebook') return txt.indexOf('ebook') !== -1 || txt.indexOf('epub') !== -1 || txt.indexOf('digital') !== -1;
+    if (cat === 'correccion') return txt.indexOf('correcc') !== -1 || txt.indexOf('estilo') !== -1 || txt.indexOf('ortotipogr') !== -1;
+    if (cat === 'papel') return txt.indexOf('papel') !== -1 || txt.indexOf('impres') !== -1 || txt.indexOf('ejemplar') !== -1;
+    return true;
+  });
+  pintarListaCompletaServicios(filtrados);
 }
 
 function abrirModalServicio(id) {
