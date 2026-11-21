@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lorem Ipsum Ediciones — Enlaces Oficiales</title>
+<meta name="description" content="Editorial independiente en San Miguel de Tucumán. Sitio web, servicios de edición, maquetación ePub/PDF, corrección y contacto directo.">
+<meta name="theme-color" content="#121316">
+<link rel="icon" type="image/png" sizes="192x192" href="https://loremipsumediciones.com.ar/favicon.png">
+<meta property="og:title" content="Lorem Ipsum Ediciones — Enlaces Oficiales">
+<meta property="og:description" content="Una editorial pensada para el escritor independiente. Web, servicios, Instagram y WhatsApp directo.">
+<meta property="og:image" content="https://loremipsumediciones.com.ar/og-portada.png">
+<meta property="og:url" content="https://loremipsumediciones.com.ar/links">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #121316;
+  --glass: rgba(255, 255, 255, 0.04);
+  --borde: rgba(244, 239, 230, 0.12);
+  --arena: #F4EFE6;
+  --media: #9E9C97;
+  --tenue: #686661;
+  --terra: #C85A38;
+  --terra-sello: #A9563F;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --mono: 'Space Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  background-image: radial-gradient(rgba(244, 239, 230, 0.04) 1px, transparent 0);
+  background-size: 28px 28px;
+  color: var(--arena);
+  font-family: var(--sans);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 44px 20px 36px 20px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+  animation: fadeUp 0.6s ease forwards;
+}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Sello animado */
+.sello { width: 72px; height: auto; color: var(--terra-sello); margin-bottom: 16px; }
+.sello :is(rect, path) {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: trazar 1s ease-in-out forwards;
+  animation-delay: calc(var(--i) * 0.25s);
+}
+@keyframes trazar { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .sello :is(rect, path) { animation: none; stroke-dashoffset: 0; }
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 8px;
+}
+h1 {
+  font-family: var(--serif);
+  font-size: 2.35rem;
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+.cursor {
+  display: inline-block;
+  width: 2.5px;
+  height: 0.8em;
+  background: var(--terra);
+  margin-left: 4px;
+  vertical-align: baseline;
+  animation: blink 1s infinite;
+}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+.sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--media);
+  margin-bottom: 30px;
+  line-height: 1.4;
+}
+
+.links { display: flex; flex-direction: column; gap: 13px; }
+
+.link-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: var(--glass);
+  border: 1px solid var(--borde);
+  color: var(--arena);
+  text-decoration: none;
+  text-align: left;
+  backdrop-filter: blur(12px);
+  transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+}
+.link-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--terra);
+  background: rgba(200, 90, 56, 0.12);
+}
+.link-btn.destacado {
+  background: var(--terra);
+  border-color: var(--terra);
+  color: #fff;
+}
+.link-btn.destacado:hover {
+  background: #b34a29;
+  border-color: #b34a29;
+}
+.link-btn.destacado .link-desc { color: rgba(255, 255, 255, 0.84); }
+
+.link-info { display: flex; flex-direction: column; gap: 2px; }
+.link-titulo {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.link-desc { font-size: 12.5px; color: var(--media); }
+.arrow { font-family: var(--mono); font-size: 15px; opacity: 0.75; flex-shrink: 0; }
+
+.pie {
+  margin-top: 34px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(244, 239, 230, 0.08);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .09em;
+  color: var(--tenue);
+  line-height: 1.8;
+}
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <!-- Sello Geométrico Animado -->
+    <svg class="sello" viewBox="345 300 233 255" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sello Lorem Ipsum Ediciones">
+      <g fill="none" stroke="currentColor" stroke-width="16" stroke-linejoin="miter" stroke-linecap="butt">
+        <rect pathLength="1" style="--i:0" x="400" y="314" width="122" height="93"/>
+        <path pathLength="1" style="--i:1" d="M431 380 V348 H491 V380"/>
+        <path pathLength="1" style="--i:2" d="M461 372 V541"/>
+        <path pathLength="1" style="--i:3" d="M400 514 V541 H522 V514"/>
+        <path pathLength="1" style="--i:4" d="M386 359 H359 V490 H429 V439 H394 V466"/>
+        <path pathLength="1" style="--i:5" d="M536 359 H563 V490 H493 V439 H528 V466"/>
+      </g>
+    </svg>
+
+    <div class="eyebrow">San Miguel de Tucumán · Argentina</div>
+    <h1>Lorem Ipsum Ediciones<span class="cursor"></span></h1>
+    <p class="sub">Una editorial pensada para el escritor independiente.</p>
+
+    <nav class="links" aria-label="Enlaces oficiales">
+      <a class="link-btn destacado" href="https://wa.me/5493816545858?text=Hola%2C%20me%20comunico%20con%20Lorem%20Ipsum%20Ediciones%20para%20consultar%20por%20un%20proyecto." target="_blank">
+        <div class="link-info">
+          <span class="link-titulo">Escribir por WhatsApp</span>
+          <span class="link-desc">Consultas rápidas y presupuestos a medida</span>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://loremipsumediciones.com.ar/servicios">
+        <div class="link-info">
+          <span class="link-titulo">Planes, Servicios y Precios</span>
+          <span class="link-desc">Ebooks (ePub + PDF), corrección, ISBN y papel</span>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://loremipsumediciones.com.ar/">
+        <div class="link-info">
+          <span class="link-titulo">Sitio Web & Simulador de Ebook</span>
+          <span class="link-desc">Catálogo, manifiesto y probador de lectura</span>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+
+      <a class="link-btn" href="https://www.instagram.com/loremipsumediciones/" target="_blank">
+        <div class="link-info">
+          <span class="link-titulo">Instagram Oficial</span>
+          <span class="link-desc">@loremipsumediciones · Guías y novedades</span>
+        </div>
+        <span class="arrow">↗</span>
+      </a>
+
+      <a class="link-btn" href="mailto:loremipsumediciones@gmail.com">
+        <div class="link-info">
+          <span class="link-titulo">Enviar Correo Electrónico</span>
+          <span class="link-desc">loremipsumediciones@gmail.com</span>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+    </nav>
+
+    <footer class="pie">
+      SELLO REGISTRADO · CAL N° 55483<br>
+      REG. DNDA RL-2026-97594932
+    </footer>
+  </main>
+</body>
+</html>
