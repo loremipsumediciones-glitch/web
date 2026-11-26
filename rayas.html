@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corrector de Rayas de Diálogo (RAE & Sousa) | Lorem Ipsum Ediciones</title>
+<meta name="description" content="Herramienta gratuita online para transformar guiones en rayas de diálogo (—) según las normas de la RAE y José Martínez de Sousa. Ideal para escritores en Word.">
+<meta name="theme-color" content="#121316">
+<link rel="icon" type="image/png" sizes="192x192" href="https://loremipsumediciones.com.ar/favicon.png">
+<meta property="og:title" content="Corrector de Rayas de Diálogo (—) | Lorem Ipsum Ediciones">
+<meta property="og:description" content="Pegá tu escena (hasta 4.000 caracteres), revisá cada cambio con un clic según RAE y Sousa y copialo listo para Word.">
+<meta property="og:image" content="https://loremipsumediciones.com.ar/og-portada.png">
+<meta property="og:url" content="https://loremipsumediciones.com.ar/rayas">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #121316;
+  --glass: rgba(255, 255, 255, 0.04);
+  --borde: rgba(244, 239, 230, 0.13);
+  --arena: #F4EFE6;
+  --media: #9E9C97;
+  --tenue: #686661;
+  --terra: #C85A38;
+  --verde: #4ade80;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --mono: 'Space Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  background-image: radial-gradient(rgba(244, 239, 230, 0.04) 1px, transparent 0);
+  background-size: 28px 28px;
+  color: var(--arena);
+  font-family: var(--sans);
+  padding: 28px 18px 50px 18px;
+  line-height: 1.6;
+}
+
+.wrap { max-width: 980px; margin: 0 auto; }
+
+.topbar {
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+  padding-bottom: 18px; margin-bottom: 28px; border-bottom: 1px solid var(--borde);
+}
+.brand {
+  display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--arena);
+  font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+}
+.nav-back {
+  font-family: var(--mono); font-size: 11px; color: var(--media); text-decoration: none;
+  border: 1px solid var(--borde); padding: 7px 12px; border-radius: 6px; transition: .2s;
+}
+.nav-back:hover { border-color: var(--terra); color: var(--arena); }
+
+.eyebrow {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--terra); margin-bottom: 8px; display: block;
+}
+h1 {
+  font-family: var(--serif); font-size: clamp(2rem, 4.5vw, 3.1rem); font-weight: 400; line-height: 1.08; margin-bottom: 10px;
+}
+h1 em { color: var(--terra); font-style: italic; }
+.bajada { color: var(--media); font-size: 0.95rem; max-width: 720px; margin-bottom: 24px; }
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+
+.panel {
+  background: var(--glass); border: 1px solid var(--borde); border-radius: 12px; padding: 18px;
+  display: flex; flex-direction: column; gap: 12px; backdrop-filter: blur(10px);
+}
+.panel-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.panel-title { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--arena); }
+.counter { font-family: var(--mono); font-size: 11px; color: var(--media); }
+.counter.tope { color: var(--terra); font-weight: 700; }
+
+textarea {
+  width: 100%; min-height: 310px; resize: vertical; background: rgba(10, 11, 14, 0.72);
+  border: 1px solid var(--borde); border-radius: 8px; padding: 14px; color: var(--arena);
+  font-family: var(--serif); font-size: 1.18rem; line-height: 1.65; outline: none;
+}
+textarea:focus { border-color: var(--terra); }
+
+.preview-area {
+  width: 100%; min-height: 310px; max-height: 440px; overflow-y: auto;
+  background: rgba(10, 11, 14, 0.72); border: 1px solid var(--borde); border-radius: 8px;
+  padding: 14px; font-family: var(--serif); font-size: 1.18rem; line-height: 1.65;
+  white-space: pre-wrap; word-wrap: break-word;
+}
+.placeholder-msg { color: var(--tenue); font-style: italic; font-size: 1.05rem; }
+
+/* Marcas clickeables tipo Control de Cambios */
+.fix-mark {
+  display: inline;
+  border-bottom: 2px solid var(--terra);
+  background: rgba(200, 90, 56, 0.22);
+  color: #fff;
+  padding: 0 2px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.fix-mark:hover { background: rgba(200, 90, 56, 0.42); }
+.fix-mark.rejected {
+  border-bottom: 2px dashed var(--tenue);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--media);
+}
+
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+.btn {
+  font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  padding: 10px 14px; border-radius: 7px; border: 1px solid var(--borde); background: rgba(255,255,255,0.05);
+  color: var(--arena); cursor: pointer; transition: .2s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+}
+.btn:hover { border-color: var(--terra); }
+.btn-terra { background: var(--terra); border-color: var(--terra); color: #fff; }
+.btn-terra:hover { background: #b24b2b; }
+
+.tip-box {
+  margin-top: 6px; font-size: 12px; color: var(--media); display: flex; flex-wrap: wrap;
+  justify-content: space-between; gap: 8px; align-items: center;
+}
+.badge-ok { color: var(--verde); font-family: var(--mono); font-size: 11px; }
+
+.rules-card {
+  margin-top: 22px; background: var(--glass); border: 1px solid var(--borde); border-radius: 12px;
+  padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;
+}
+.rule-item h3 { font-family: var(--serif); font-size: 1.3rem; color: var(--terra); margin-bottom: 4px; }
+.rule-item p { font-size: 0.85rem; color: var(--media); }
+
+.cta-box {
+  margin-top: 24px; background: linear-gradient(135deg, rgba(200,90,56,0.14), rgba(255,255,255,0.03));
+  border: 1px solid rgba(200,90,56,0.45); border-radius: 12px; padding: 24px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px;
+}
+.cta-box h2 { font-family: var(--serif); font-size: 1.75rem; font-weight: 400; margin-bottom: 4px; }
+.cta-box p { font-size: 0.9rem; color: var(--media); max-width: 580px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <a class="brand" href="https://loremipsumediciones.com.ar/">
+      <span>◆ Lorem Ipsum Ediciones</span>
+    </a>
+    <a class="nav-back" href="https://loremipsumediciones.com.ar/links">← Todos los enlaces</a>
+  </header>
+
+  <span class="eyebrow">Herramienta gratuita de taller · RAE & Martínez de Sousa</span>
+  <h1>Corrector inteligente de <em>rayas de diálogo</em></h1>
+  <p class="bajada">
+    Pegá hasta <strong>4.000 caracteres</strong> de tu manuscrito. Detectamos guiones cortos y espacios mal ubicados en tus diálogos sin tocar palabras compuestas (como <em>médico-legal</em>). Hacé clic en cualquier marca subrayada si querés revertirla y luego copiá tu texto listo para pegar en Word o Google Docs.
+  </p>
+
+  <div class="grid">
+    <!-- ENTRADA -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">1. Pegá tu texto acá</span>
+        <span class="counter" id="charCount">0 / 4.000 caracteres</span>
+      </div>
+      <textarea id="txtIn" maxlength="4000" placeholder="Pegá tu escena o diálogo acá (máximo 4.000 caracteres)..." oninput="procesar()"></textarea>
+      <div class="actions">
+        <button class="btn" onclick="cargarEjemplo()">✨ Cargar ejemplo con errores</button>
+        <button class="btn" onclick="limpiar()">Limpiar</button>
+      </div>
+    </div>
+
+    <!-- SALIDA INTERACTIVA -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">2. Revisá con un clic y copiá</span>
+        <span class="badge-ok" id="fixStats">0 cambios detectados</span>
+      </div>
+      <div class="preview-area" id="previewOut">
+        <span class="placeholder-msg">Acá van a aparecer subrayadas en terracota todas las rayas corregidas. Tocá cualquiera para aceptarla o dejar el original…</span>
+      </div>
+      <div class="actions">
+        <button class="btn" onclick="aceptarTodas(true)">✓ Aplicar todas</button>
+        <button class="btn btn-terra" onclick="copiarTexto()" id="btnCopy">📋 Copiar texto corregido</button>
+      </div>
+      <div class="tip-box">
+        <span>💡 Tip: Tocá un subrayado para alternar entre corregido y original.</span>
+        <span id="copyMsg" style="color:var(--verde);font-family:var(--mono);font-size:11px;"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MINI GUÍA RAE -->
+  <section class="rules-card">
+    <div class="rule-item">
+      <h3>1. Raya larga, no guion</h3>
+      <p>En español los diálogos se abren con raya larga (—), nunca con guion corto (-) ni semirraya (–).</p>
+    </div>
+    <div class="rule-item">
+      <h3>2. Pegada al habla</h3>
+      <p>No va espacio después de la raya que abre el diálogo ni antes del inciso: <em>—Hola —dijo Juan—, ¿cómo estás?</em></p>
+    </div>
+    <div class="rule-item">
+      <h3>3. Cierre e inciso</h3>
+      <p>Si el personaje sigue hablando, cierra con raya antes de la coma o punto. Si termina ahí el párrafo, la raya de cierre desaparece.</p>
+    </div>
+  </section>
+
+  <!-- EMBUDO EDITORIAL -->
+  <section class="cta-box">
+    <div>
+      <h2>¿Tenés un libro entero de 80, 150 o 200 páginas?</h2>
+      <p>No corrijas capítulo por capítulo a mano. En <strong>Lorem Ipsum Ediciones</strong> realizamos corrección ortotipográfica y de estilo integral con Control de Cambios en Word, maquetación y registro ISBN/DNDA.</p>
+    </div>
+    <a class="btn btn-terra" href="https://wa.me/5493816545858?text=Hola!%20Prob%C3%A9%20el%20corrector%20de%20rayas%20y%20quiero%20consultar%20por%20correcci%C3%B3n%20de%20mi%20manuscrito." target="_blank">
+      Consultar por mi libro →
+    </a>
+  </section>
+</div>
+
+<script>
+let parsedLines = [];
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function analizarLinea(line) {
+  const segs = [];
+  const esDialogo = /^\s*(?:--?|–|—)/.test(line);
+  if (!esDialogo) {
+    const rxNoDial = /(\s*)(--|\u2013)(\s*)/g;
+    let last = 0, m;
+    while ((m = rxNoDial.exec(line)) !== null) {
+      if (m.index > last) segs.push({ type: 'text', val: line.slice(last, m.index) });
+      const orig = m[0];
+      const fixed = (m[1] ? ' ' : '') + '—' + (m[3] ? ' ' : '');
+      segs.push({ type: 'fix', orig, fixed, accepted: true, reason: 'Guion doble/semirraya reemplazado por raya (—)' });
+      last = m.index + orig.length;
+    }
+    if (last < line.length) segs.push({ type: 'text', val: line.slice(last) });
+    return segs;
+  }
+
+  let cursor = 0;
+  const mOpen = line.match(/^(\s*)(?:--?|–|—)([ \t]*)/);
+  if (mOpen) {
+    const orig = mOpen[0];
+    const lead = mOpen[1];
+    const restChar = line[orig.length] || '';
+    const fixed = lead + '—';
+    if (orig !== fixed && restChar !== '') {
+      segs.push({ type: 'fix', orig, fixed, accepted: true, reason: 'Raya de apertura pegada al texto (RAE)' });
+    } else {
+      segs.push({ type: 'text', val: orig });
+    }
+    cursor = orig.length;
+  }
+
+  const resto = line.slice(cursor);
+  const rx = /([ \t]*)(--?|–|—)([ \t]*)/g;
+  let last = 0, m;
+  let incisoAbierto = false;
+
+  while ((m = rx.exec(resto)) !== null) {
+    const idx = m.index;
+    const orig = m[0];
+    const spAntes = m[1], simbolo = m[2], spDesp = m[3];
+    const charAntes = resto[idx - 1] || '';
+    const charDesp = resto[idx + orig.length] || '';
+
+    if (simbolo === '-' && !spAntes && !spDesp && /[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ0-9]/.test(charAntes) && /[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ0-9]/.test(charDesp)) {
+      continue;
+    }
+
+    if (idx > last) segs.push({ type: 'text', val: resto.slice(last, idx) });
+
+    let fixed = orig;
+    let reason = '';
+
+    if (!incisoAbierto) {
+      fixed = ' —';
+      reason = 'Apertura de inciso: espacio antes de la raya y pegada al verbo (RAE)';
+      incisoAbierto = true;
+    } else {
+      const esPunt = /[.,;:?!]/.test(charDesp);
+      const quedaSoloPuntAlFinal = esPunt && resto.slice(idx + orig.length + 1).trim() === '';
+      const esFinDeLinea = charDesp === '';
+
+      if (esFinDeLinea || quedaSoloPuntAlFinal) {
+        fixed = '';
+        reason = 'Cierre de párrafo: según la RAE no lleva raya de cierre antes del punto final';
+      } else if (esPunt) {
+        fixed = '—';
+        reason = 'Cierre de inciso: raya pegada antes del signo de puntuación';
+      } else {
+        fixed = '— ';
+        reason = 'Cierre de inciso: raya pegada al inciso y espacio posterior';
+      }
+      incisoAbierto = false;
+    }
+
+    if (fixed !== orig) {
+      segs.push({ type: 'fix', orig, fixed, accepted: true, reason });
+    } else {
+      segs.push({ type: 'text', val: orig });
+    }
+    last = idx + orig.length;
+  }
+
+  if (last < resto.length) segs.push({ type: 'text', val: resto.slice(last) });
+  return segs;
+}
+
+function procesar() {
+  const txtEl = document.getElementById('txtIn');
+  let val = txtEl.value;
+  if (val.length > 4000) {
+    val = val.slice(0, 4000);
+    txtEl.value = val;
+  }
+  const cntEl = document.getElementById('charCount');
+  cntEl.textContent = `${val.length.toLocaleString('es-AR')} / 4.000 caracteres`;
+  cntEl.classList.toggle('tope', val.length >= 3900);
+
+  if (!val.trim()) {
+    parsedLines = [];
+    document.getElementById('previewOut').innerHTML = `<span class="placeholder-msg">Acá van a aparecer subrayadas en terracota todas las rayas corregidas. Tocá cualquiera para aceptarla o dejar el original…</span>`;
+    document.getElementById('fixStats').textContent = '0 cambios detectados';
+    return;
+  }
+
+  const lines = val.split(/\r?\n/);
+  parsedLines = lines.map(analizarLinea);
+  pintarPreview();
+}
+
+function pintarPreview() {
+  let totalFixes = 0;
+  let activeFixes = 0;
+
+  const html = parsedLines.map((segs, li) => {
+    return segs.map((s, si) => {
+      if (s.type === 'text') return escapeHtml(s.val);
+      totalFixes++;
+      if (s.accepted) activeFixes++;
+      const mostrado = s.accepted ? (s.fixed === '' ? '∅' : s.fixed) : s.orig;
+      const cls = s.accepted ? 'fix-mark' : 'fix-mark rejected';
+      return `<span class="${cls}" title="${escapeHtml(s.reason)} (clic para cambiar)" onclick="toggleFix(${li},${si})">${escapeHtml(mostrado)}</span>`;
+    }).join('');
+  }).join('\n');
+
+  document.getElementById('previewOut').innerHTML = html;
+  document.getElementById('fixStats').textContent = `${activeFixes} de ${totalFixes} cambios activos`;
+}
+
+function toggleFix(li, si) {
+  const seg = parsedLines[li][si];
+  seg.accepted = !seg.accepted;
+  pintarPreview();
+}
+
+function aceptarTodas(estado) {
+  parsedLines.forEach(segs => segs.forEach(s => { if (s.type === 'fix') s.accepted = estado; }));
+  pintarPreview();
+}
+
+function mostrarConfirmacionCopia() {
+  const msg = document.getElementById('copyMsg');
+  msg.textContent = '✓ ¡Copiado! Pegalo en Word o Docs con Ctrl + V';
+  setTimeout(() => { msg.textContent = ''; }, 3500);
+}
+
+function copiaRespaldo(texto) {
+  const ta = document.createElement('textarea');
+  ta.value = texto;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
+  mostrarConfirmacionCopia();
+}
+
+function copiarTexto() {
+  if (!parsedLines.length) return;
+  const textoFinal = parsedLines.map(segs =>
+    segs.map(s => s.type === 'text' ? s.val : (s.accepted ? s.fixed : s.orig)).join('')
+  ).join('\n');
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(textoFinal).then(mostrarConfirmacionCopia).catch(() => copiaRespaldo(textoFinal));
+  } else {
+    copiaRespaldo(textoFinal);
+  }
+}
+
+function limpiar() {
+  document.getElementById('txtIn').value = '';
+  document.getElementById('copyMsg').textContent = '';
+  procesar();
+}
+
+function cargarEjemplo() {
+  document.getElementById('txtIn').value =
+`- Hola, Lucía - dijo Marcos en voz baja - , pensé que no ibas a venir.
+- Vine por el informe médico-legal - respondió ella sin mirarlo -. No pienso quedarme mucho.
+-- No hace falta que te apures -- murmuró él--. Podemos hablar un minuto.`;
+  procesar();
+}
+</script>
+</body>
+</html>
