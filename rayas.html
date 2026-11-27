@@ -7,10 +7,14 @@
 <meta name="description" content="Herramienta gratuita online para transformar guiones en rayas de diálogo (—) según las normas de la RAE y José Martínez de Sousa. Ideal para escritores en Word.">
 <meta name="theme-color" content="#121316">
 <link rel="icon" type="image/png" sizes="192x192" href="https://loremipsumediciones.com.ar/favicon.png">
+<link rel="canonical" href="https://loremipsumediciones.com.ar/rayas">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
 <meta property="og:title" content="Corrector de Rayas de Diálogo (—) | Lorem Ipsum Ediciones">
 <meta property="og:description" content="Pegá tu escena (hasta 4.000 caracteres), revisá cada cambio con un clic según RAE y Sousa y copialo listo para Word.">
 <meta property="og:image" content="https://loremipsumediciones.com.ar/og-portada.png">
 <meta property="og:url" content="https://loremipsumediciones.com.ar/rayas">
+<meta name="twitter:card" content="summary_large_image">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,7 +78,9 @@ h1 em { color: var(--terra); font-style: italic; }
 
 .panel {
   background: var(--glass); border: 1px solid var(--borde); border-radius: 12px; padding: 18px;
-  display: flex; flex-direction: column; gap: 12px; backdrop-filter: blur(10px);
+  display: flex; flex-direction: column; gap: 12px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 .panel-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
 .panel-title { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--arena); }
@@ -133,6 +139,8 @@ textarea:focus { border-color: var(--terra); }
 .rules-card {
   margin-top: 22px; background: var(--glass); border: 1px solid var(--borde); border-radius: 12px;
   padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 .rule-item h3 { font-family: var(--serif); font-size: 1.3rem; color: var(--terra); margin-bottom: 4px; }
 .rule-item p { font-size: 0.85rem; color: var(--media); }
@@ -144,6 +152,23 @@ textarea:focus { border-color: var(--terra); }
 }
 .cta-box h2 { font-family: var(--serif); font-size: 1.75rem; font-weight: 400; margin-bottom: 4px; }
 .cta-box p { font-size: 0.9rem; color: var(--media); max-width: 580px; }
+
+/* Caja pequeña de sugerencias */
+.feedback-box {
+  margin-top: 22px; background: rgba(255, 255, 255, 0.02); border: 1px dashed var(--borde);
+  border-radius: 10px; padding: 14px 18px; display: flex; flex-wrap: wrap;
+  align-items: center; justify-content: space-between; gap: 12px;
+}
+.feedback-info { display: flex; flex-direction: column; gap: 2px; }
+.feedback-title { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: .12em; color: var(--arena); }
+.feedback-sub { font-size: 0.82rem; color: var(--media); }
+.feedback-form { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; min-width: 260px; max-width: 520px; justify-content: flex-end; }
+.input-sm {
+  background: rgba(10, 11, 14, 0.72); border: 1px solid var(--borde); border-radius: 6px;
+  padding: 8px 11px; color: var(--arena); font-family: var(--sans); font-size: 0.85rem; outline: none;
+}
+.input-sm:focus { border-color: var(--terra); }
+.input-msg { flex: 1; min-width: 170px; }
 </style>
 </head>
 <body>
@@ -158,7 +183,7 @@ textarea:focus { border-color: var(--terra); }
   <span class="eyebrow">Herramienta gratuita de taller · RAE & Martínez de Sousa</span>
   <h1>Corrector inteligente de <em>rayas de diálogo</em></h1>
   <p class="bajada">
-    Pegá hasta <strong>4.000 caracteres</strong> de tu manuscrito. Detectamos guiones cortos y espacios mal ubicados en tus diálogos sin tocar palabras compuestas (como <em>médico-legal</em>). Hacé clic en cualquier marca subrayada si querés revertirla y luego copiá tu texto listo para pegar en Word o Google Docs.
+    Pegá hasta <strong>4.000 caracteres</strong> de tu manuscrito. Detectamos guiones cortos y espacios mal ubicados en tus diálogos e incisos sin tocar palabras compuestas (como <em>médico-legal</em>). Hacé clic en cualquier marca subrayada si querés revertirla y luego copiá tu texto listo para pegar en Word o Google Docs.
   </p>
 
   <div class="grid">
@@ -170,8 +195,8 @@ textarea:focus { border-color: var(--terra); }
       </div>
       <textarea id="txtIn" maxlength="4000" placeholder="Pegá tu escena o diálogo acá (máximo 4.000 caracteres)..." oninput="procesar()"></textarea>
       <div class="actions">
-        <button class="btn" onclick="cargarEjemplo()">✨ Cargar ejemplo con errores</button>
-        <button class="btn" onclick="limpiar()">Limpiar</button>
+        <button type="button" class="btn" onclick="cargarEjemplo()">✨ Cargar ejemplo con errores</button>
+        <button type="button" class="btn" onclick="limpiar()">Limpiar</button>
       </div>
     </div>
 
@@ -185,11 +210,14 @@ textarea:focus { border-color: var(--terra); }
         <span class="placeholder-msg">Acá van a aparecer subrayadas en terracota todas las rayas corregidas. Tocá cualquiera para aceptarla o dejar el original…</span>
       </div>
       <div class="actions">
-        <button class="btn" onclick="aceptarTodas(true)">✓ Aplicar todas</button>
-        <button class="btn btn-terra" onclick="copiarTexto()" id="btnCopy">📋 Copiar texto corregido</button>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button type="button" class="btn" onclick="aceptarTodas(true)">✓ Aplicar todas</button>
+          <button type="button" class="btn" onclick="aceptarTodas(false)">↺ Original</button>
+        </div>
+        <button type="button" class="btn btn-terra" onclick="copiarTexto()" id="btnCopy">📋 Copiar texto corregido</button>
       </div>
       <div class="tip-box">
-        <span>💡 Tip: Tocá un subrayado para alternar entre corregido y original.</span>
+        <span>💡 Tip: Tocá cualquier marca subrayada para alternar entre corregido y original.</span>
         <span id="copyMsg" style="color:var(--verde);font-family:var(--mono);font-size:11px;"></span>
       </div>
     </div>
@@ -207,7 +235,7 @@ textarea:focus { border-color: var(--terra); }
     </div>
     <div class="rule-item">
       <h3>3. Cierre e inciso</h3>
-      <p>Si el personaje sigue hablando, cierra con raya antes de la coma o punto. Si termina ahí el párrafo, la raya de cierre desaparece.</p>
+      <p>Si el personaje sigue hablando, cierra con raya antes de la coma o punto. Si termina ahí el párrafo, la raya de cierre desaparece (∅).</p>
     </div>
   </section>
 
@@ -217,90 +245,200 @@ textarea:focus { border-color: var(--terra); }
       <h2>¿Tenés un libro entero de 80, 150 o 200 páginas?</h2>
       <p>No corrijas capítulo por capítulo a mano. En <strong>Lorem Ipsum Ediciones</strong> realizamos corrección ortotipográfica y de estilo integral con Control de Cambios en Word, maquetación y registro ISBN/DNDA.</p>
     </div>
-    <a class="btn btn-terra" href="https://wa.me/5493816545858?text=Hola!%20Prob%C3%A9%20el%20corrector%20de%20rayas%20y%20quiero%20consultar%20por%20correcci%C3%B3n%20de%20mi%20manuscrito." target="_blank">
+    <a class="btn btn-terra" href="https://wa.me/5493816545858?text=Hola!%20Prob%C3%A9%20el%20corrector%20de%20rayas%20y%20quiero%20consultar%20por%20correcci%C3%B3n%20de%20mi%20manuscrito." target="_blank" rel="noopener noreferrer">
       Consultar por mi libro →
     </a>
+  </section>
+
+  <!-- CAJA PEQUEÑA DE SUGERENCIAS -->
+  <section class="feedback-box">
+    <div class="feedback-info">
+      <span class="feedback-title">📬 Buzón de taller</span>
+      <span class="feedback-sub">¿Encontraste algún caso raro con un guion o tenés una sugerencia para mejorar el corrector?</span>
+    </div>
+    <form class="feedback-form" id="sugForm" onsubmit="enviarSugerencia(event)">
+      <input type="text" id="sugTexto" class="input-sm input-msg" placeholder="Escribí tu sugerencia o ejemplo acá..." required maxlength="350">
+      <input type="email" id="sugEmail" class="input-sm" placeholder="Tu email (opcional)" style="width:155px;">
+      <button type="submit" class="btn" id="btnSug">Enviar</button>
+    </form>
+    <span id="sugStatus" style="width:100%;text-align:right;font-family:var(--mono);font-size:11px;color:var(--verde);display:none;"></span>
   </section>
 </div>
 
 <script>
+// Cuando FormSubmit te envíe el mail de activación, podés reemplazar esto por el alias anónimo que te dan:
+const MI_EMAIL_DESTINO = "loremipsumediciones@gmail.com";
+
 let parsedLines = [];
 
 function escapeHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function analizarLinea(line) {
   const segs = [];
-  const esDialogo = /^\s*(?:--?|–|—)/.test(line);
+
+  // No tocar líneas que son únicamente separadores de escena (ej: "---", "— —")
+  if (/^[\s\u00A0]*[-–—\s\u00A0]+$/.test(line)) {
+    return line ? [{ type: 'text', val: line }] : [];
+  }
+
+  // Detecta si la línea empieza como diálogo (no confunde "-5 grados" o "–5 grados" con diálogo)
+  const esDialogo = /^[\s\u00A0]*(?:—+|–+(?![0-9])|-{1,}(?![0-9]))/.test(line);
+
   if (!esDialogo) {
-    const rxNoDial = /(\s*)(--|\u2013)(\s*)/g;
+    // En párrafos narrativos corrige incisos con guiones (-, --, ---), semirrayas (–) o rayas mal espaciadas
+    const rxNoDial = /([.,;:]?)([ \t\u00A0]*)(—+|–+|-{1,})([ \t\u00A0]*)/g;
     let last = 0, m;
+    let incisoNarrativo = false;
+
     while ((m = rxNoDial.exec(line)) !== null) {
-      if (m.index > last) segs.push({ type: 'text', val: line.slice(last, m.index) });
-      const orig = m[0];
-      const fixed = (m[1] ? ' ' : '') + '—' + (m[3] ? ' ' : '');
-      segs.push({ type: 'fix', orig, fixed, accepted: true, reason: 'Guion doble/semirraya reemplazado por raya (—)' });
-      last = m.index + orig.length;
+      const idx = m.index;
+      const punctAntes = m[1], spAntes = m[2], simbolo = m[3], spDesp = m[4];
+      const dashStart = idx + punctAntes.length;
+      const origSinPunct = m[0].slice(punctAntes.length);
+      const charAntesDash = line[dashStart - 1] || '';
+      const charDesp = line[idx + m[0].length] || '';
+
+      // Protege números negativos (ej: "de -5 grados", "entre -10 y 5")
+      if ((simbolo === '-' || simbolo === '\u2013') && !spDesp && /[0-9]/.test(charDesp)) {
+        continue;
+      }
+
+      // Protege palabras compuestas o rangos sin espacios (ej: médico-legal, château-fort, 1990–2000)
+      if (
+        (simbolo === '-' || simbolo === '\u2013') &&
+        !spAntes &&
+        !spDesp &&
+        /[\p{L}\p{N}]/u.test(charAntesDash) &&
+        /[\p{L}\p{N}]/u.test(charDesp)
+      ) {
+        continue;
+      }
+
+      const esPuntosSusp = punctAntes === '.' && line[idx - 1] === '.';
+      const esPuntDesp = /^[.,;:?!…)"»”’\]]/.test(charDesp);
+      const moverPunct = incisoNarrativo && punctAntes && !esPuntosSusp && !esPuntDesp;
+
+      const cutIdx = moverPunct ? idx : dashStart;
+      const orig = moverPunct ? m[0] : origSinPunct;
+
+      if (cutIdx > last) segs.push({ type: 'text', val: line.slice(last, cutIdx) });
+
+      let fixed = orig;
+      let reason = '';
+
+      if (!incisoNarrativo) {
+        const trasApertura = dashStart === 0 || /[«"“‘(\[¿¡]/.test(charAntesDash);
+        fixed = (trasApertura ? '' : ' ') + '—';
+        reason = 'Apertura de inciso narrativo: espacio antes y raya pegada al texto interno (RAE)';
+        incisoNarrativo = true;
+      } else {
+        if (moverPunct) {
+          fixed = '—' + punctAntes + (charDesp === '' ? '' : ' ');
+          reason = 'Cierre de inciso narrativo: la puntuación va después de la raya de cierre (RAE)';
+        } else {
+          fixed = (esPuntDesp || charDesp === '') ? '—' : '— ';
+          reason = 'Cierre de inciso narrativo: raya pegada al texto interno (RAE)';
+        }
+        incisoNarrativo = false;
+      }
+
+      if (fixed !== orig) {
+        segs.push({ type: 'fix', orig, fixed, accepted: true, reason });
+      } else {
+        segs.push({ type: 'text', val: orig });
+      }
+      last = idx + m[0].length;
     }
     if (last < line.length) segs.push({ type: 'text', val: line.slice(last) });
     return segs;
   }
 
   let cursor = 0;
-  const mOpen = line.match(/^(\s*)(?:--?|–|—)([ \t]*)/);
+  // 1. Apertura del diálogo al inicio de la línea (soporta -, --, ---, –, —)
+  const mOpen = line.match(/^([\s\u00A0]*)(?:—+|–+|-{1,})([ \t\u00A0]*)/);
   if (mOpen) {
     const orig = mOpen[0];
     const lead = mOpen[1];
     const restChar = line[orig.length] || '';
     const fixed = lead + '—';
     if (orig !== fixed && restChar !== '') {
-      segs.push({ type: 'fix', orig, fixed, accepted: true, reason: 'Raya de apertura pegada al texto (RAE)' });
+      segs.push({ type: 'fix', orig, fixed, accepted: true, reason: 'Raya de apertura pegada al diálogo sin espacio (RAE)' });
     } else {
       segs.push({ type: 'text', val: orig });
     }
     cursor = orig.length;
   }
 
+  // 2. Incisos del narrador dentro del diálogo
   const resto = line.slice(cursor);
-  const rx = /([ \t]*)(--?|–|—)([ \t]*)/g;
+  const rx = /([.,;:]?)([ \t\u00A0]*)(—+|–+|-{1,})([ \t\u00A0]*)/g;
   let last = 0, m;
   let incisoAbierto = false;
 
   while ((m = rx.exec(resto)) !== null) {
     const idx = m.index;
-    const orig = m[0];
-    const spAntes = m[1], simbolo = m[2], spDesp = m[3];
-    const charAntes = resto[idx - 1] || '';
-    const charDesp = resto[idx + orig.length] || '';
+    const punctAntes = m[1], spAntes = m[2], simbolo = m[3], spDesp = m[4];
+    const dashStart = idx + punctAntes.length;
+    const origSinPunct = m[0].slice(punctAntes.length);
+    const charAntesDash = resto[dashStart - 1] || '';
+    const charDesp = resto[idx + m[0].length] || '';
 
-    if (simbolo === '-' && !spAntes && !spDesp && /[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ0-9]/.test(charAntes) && /[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ0-9]/.test(charDesp)) {
+    // Protege números negativos dentro del parlamento (ej: "Hacía -5 grados")
+    if ((simbolo === '-' || simbolo === '\u2013') && !spDesp && /[0-9]/.test(charDesp)) {
       continue;
     }
 
-    if (idx > last) segs.push({ type: 'text', val: resto.slice(last, idx) });
+    // Protege palabras compuestas con guion corto o semirraya sin espacios (ej: médico-legal, château-fort)
+    if (
+      (simbolo === '-' || simbolo === '\u2013') &&
+      !spAntes &&
+      !spDesp &&
+      /[\p{L}\p{N}]/u.test(charAntesDash) &&
+      /[\p{L}\p{N}]/u.test(charDesp)
+    ) {
+      continue;
+    }
+
+    const colaRestante = resto.slice(idx + m[0].length);
+    const esPuntCierre = /^[.,;:?!…)"»”’\]]/.test(charDesp);
+    const esCierreDeParrafo = /^([.,;:?!…]+["”’»)\]]*)?[\s\u00A0]*$/.test(colaRestante);
+    const esPuntosSusp = punctAntes === '.' && resto[idx - 1] === '.';
+    const moverPunct = incisoAbierto && punctAntes && !esPuntosSusp && !esPuntCierre;
+
+    const cutIdx = moverPunct ? idx : dashStart;
+    const orig = moverPunct ? m[0] : origSinPunct;
+
+    if (cutIdx > last) segs.push({ type: 'text', val: resto.slice(last, cutIdx) });
 
     let fixed = orig;
     let reason = '';
 
     if (!incisoAbierto) {
       fixed = ' —';
-      reason = 'Apertura de inciso: espacio antes de la raya y pegada al verbo (RAE)';
+      reason = 'Apertura de inciso: espacio antes de la raya y pegada al verbo o aclaración (RAE)';
       incisoAbierto = true;
     } else {
-      const esPunt = /[.,;:?!]/.test(charDesp);
-      const quedaSoloPuntAlFinal = esPunt && resto.slice(idx + orig.length + 1).trim() === '';
-      const esFinDeLinea = charDesp === '';
-
-      if (esFinDeLinea || quedaSoloPuntAlFinal) {
-        fixed = '';
-        reason = 'Cierre de párrafo: según la RAE no lleva raya de cierre antes del punto final';
-      } else if (esPunt) {
+      if (esCierreDeParrafo) {
+        fixed = moverPunct ? punctAntes : '';
+        reason = moverPunct
+          ? 'Cierre de párrafo: sin raya final y conservando la puntuación de cierre (RAE)'
+          : 'Cierre de párrafo: según la RAE no va raya de cierre cuando el inciso termina el párrafo';
+      } else if (moverPunct) {
+        fixed = '—' + punctAntes + ' ';
+        reason = 'Cierre de inciso: la coma o punto va después de la raya de cierre, nunca antes (RAE)';
+      } else if (esPuntCierre) {
         fixed = '—';
-        reason = 'Cierre de inciso: raya pegada antes del signo de puntuación';
+        reason = 'Cierre de inciso: raya pegada a la última palabra del inciso y antes del signo de puntuación';
       } else {
         fixed = '— ';
-        reason = 'Cierre de inciso: raya pegada al inciso y espacio posterior';
+        reason = 'Cierre de inciso: raya pegada al inciso y espacio antes de que continúe el parlamento';
       }
       incisoAbierto = false;
     }
@@ -310,7 +448,7 @@ function analizarLinea(line) {
     } else {
       segs.push({ type: 'text', val: orig });
     }
-    last = idx + orig.length;
+    last = idx + m[0].length;
   }
 
   if (last < resto.length) segs.push({ type: 'text', val: resto.slice(last) });
@@ -341,6 +479,13 @@ function procesar() {
 }
 
 function pintarPreview() {
+  const preview = document.getElementById('previewOut');
+  const scrollPrevio = preview.scrollTop;
+  const activeEl = document.activeElement;
+  const activeKey = activeEl && activeEl.classList && activeEl.classList.contains('fix-mark')
+    ? activeEl.getAttribute('data-fix')
+    : null;
+
   let totalFixes = 0;
   let activeFixes = 0;
 
@@ -351,11 +496,18 @@ function pintarPreview() {
       if (s.accepted) activeFixes++;
       const mostrado = s.accepted ? (s.fixed === '' ? '∅' : s.fixed) : s.orig;
       const cls = s.accepted ? 'fix-mark' : 'fix-mark rejected';
-      return `<span class="${cls}" title="${escapeHtml(s.reason)} (clic para cambiar)" onclick="toggleFix(${li},${si})">${escapeHtml(mostrado)}</span>`;
+      return `<span class="${cls}" data-fix="${li}-${si}" role="button" tabindex="0" aria-label="${escapeHtml(s.reason)}. Clic para alternar" title="${escapeHtml(s.reason)} (clic para alternar)" onclick="toggleFix(${li},${si})" onkeydown="toggleFixKey(event,${li},${si})">${escapeHtml(mostrado)}</span>`;
     }).join('');
   }).join('\n');
 
-  document.getElementById('previewOut').innerHTML = html;
+  preview.innerHTML = html;
+  preview.scrollTop = scrollPrevio;
+
+  if (activeKey) {
+    const target = preview.querySelector(`.fix-mark[data-fix="${activeKey}"]`);
+    if (target) target.focus({ preventScroll: true });
+  }
+
   document.getElementById('fixStats').textContent = `${activeFixes} de ${totalFixes} cambios activos`;
 }
 
@@ -365,13 +517,22 @@ function toggleFix(li, si) {
   pintarPreview();
 }
 
+function toggleFixKey(e, li, si) {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    toggleFix(li, si);
+  }
+}
+
 function aceptarTodas(estado) {
+  if (!parsedLines.length) return;
   parsedLines.forEach(segs => segs.forEach(s => { if (s.type === 'fix') s.accepted = estado; }));
   pintarPreview();
 }
 
 function mostrarConfirmacionCopia() {
   const msg = document.getElementById('copyMsg');
+  msg.style.color = 'var(--verde)';
   msg.textContent = '✓ ¡Copiado! Pegalo en Word o Docs con Ctrl + V';
   setTimeout(() => { msg.textContent = ''; }, 3500);
 }
@@ -389,7 +550,17 @@ function copiaRespaldo(texto) {
 }
 
 function copiarTexto() {
-  if (!parsedLines.length) return;
+  if (!parsedLines.length) {
+    const msg = document.getElementById('copyMsg');
+    msg.style.color = 'var(--terra)';
+    msg.textContent = 'Pegá un texto primero para copiar.';
+    setTimeout(() => {
+      msg.textContent = '';
+      msg.style.color = 'var(--verde)';
+    }, 2500);
+    return;
+  }
+
   const textoFinal = parsedLines.map(segs =>
     segs.map(s => s.type === 'text' ? s.val : (s.accepted ? s.fixed : s.orig)).join('')
   ).join('\n');
@@ -409,11 +580,65 @@ function limpiar() {
 
 function cargarEjemplo() {
   document.getElementById('txtIn').value =
-`- Hola, Lucía - dijo Marcos en voz baja - , pensé que no ibas a venir.
+`- Hola, Lucía - dijo Marcos en voz baja, - pensé que no ibas a venir.
 - Vine por el informe médico-legal - respondió ella sin mirarlo -. No pienso quedarme mucho.
--- No hace falta que te apures -- murmuró él--. Podemos hablar un minuto.`;
+La tarde caía - pensó Marcos mientras revisaba las carpetas de 1998–2004 con -5 grados en la oficina - con una lentitud insoportable.
+-- No hace falta que te apures -- murmuró él --...`;
   procesar();
 }
+
+function enviarSugerencia(e) {
+  e.preventDefault();
+  const texto = document.getElementById('sugTexto').value.trim();
+  const email = document.getElementById('sugEmail').value.trim();
+  const btn = document.getElementById('btnSug');
+  const status = document.getElementById('sugStatus');
+
+  if (!texto) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  fetch(`https://formsubmit.co/ajax/${MI_EMAIL_DESTINO}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      _subject: 'Nueva sugerencia - Corrector de Rayas',
+      Sugerencia: texto,
+      Contacto: email || 'Anónimo'
+    })
+  })
+  .then(async res => {
+    const data = await res.json();
+    if (!res.ok || (data.success !== true && data.success !== 'true')) {
+      throw new Error(data.message || 'Error al enviar');
+    }
+    document.getElementById('sugForm').reset();
+    status.style.color = 'var(--verde)';
+    status.style.display = 'block';
+    status.textContent = '✓ ¡Gracias! Recibimos tu sugerencia en nuestro correo.';
+    btn.disabled = false;
+    btn.textContent = 'Enviar';
+    setTimeout(() => { status.style.display = 'none'; }, 5000);
+  })
+  .catch(() => {
+    status.style.color = 'var(--terra)';
+    status.style.display = 'block';
+    status.textContent = `No se pudo enviar automático. Escribinos a ${MI_EMAIL_DESTINO}`;
+    const asunto = encodeURIComponent('Sugerencia para Corrector de Rayas');
+    const cuerpo = encodeURIComponent(`${texto}\n\nDe: ${email || 'Usuario web'}`);
+    window.location.href = `mailto:${MI_EMAIL_DESTINO}?subject=${asunto}&body=${cuerpo}`;
+    btn.disabled = false;
+    btn.textContent = 'Enviar';
+  });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('txtIn').value) procesar();
+});
 </script>
 </body>
 </html>
